@@ -1,4 +1,8 @@
 .study-timer {
+  flex-wrap: wrap;
+  box-sizing: border-box;
+  min-height: 36px;
+  width: 100%;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -190,12 +194,19 @@
   }
 }
 
-/* Weekly active-learning chart shown on the flashcard learning progress page. */
+/* Flashcard-home overview: respond to available widget width, including panes. */
 .study-overview-stats {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  align-items: stretch;
   width: 100%;
   gap: 14px;
+}
+
+.study-overview-stats > .weekly-time,
+.study-overview-stats > .daily-stats {
+  min-width: 0;
+  margin: 0;
 }
 
 .weekly-time {
@@ -505,3 +516,4 @@
     gap: 24px;
   }
 }
+

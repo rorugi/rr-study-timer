@@ -8,7 +8,7 @@
   "version": {
     "major": 0,
     "minor": 5,
-    "patch": 1
+    "patch": 8
   },
   "description": "Active flashcard learning time with inactivity pausing, rename-safe document/folder tracking, home summary, and daily/weekly statistics.",
   "requestNative": false,

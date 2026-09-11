@@ -21,6 +21,7 @@ const config = {
     return obj;
   }, {}),
   output: {
+    clean: true,
     path: resolve(__dirname, 'dist'),
     filename: '[name].js',
     publicPath: '',
@@ -53,6 +54,10 @@ const config = {
       const queryParams = Object.fromEntries(urlSearchParams.entries());
       const widgetName = queryParams["widgetName"];
       if (widgetName == undefined) {document.body.innerHTML+="Widget ID not specified."}
+      const css = document.createElement('link');
+      css.rel = 'stylesheet';
+      css.href = widgetName+"${SANDBOX_SUFFIX}.css";
+      document.head.appendChild(css);
       const s = document.createElement('script');
       s.type = "module";
       s.src = widgetName+"${SANDBOX_SUFFIX}.js";

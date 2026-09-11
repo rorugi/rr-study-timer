@@ -23,6 +23,7 @@ export type DailyStudyStats = {
   totalCardsCompleted: number;
   entities: Record<string, DailyEntityStats>;
   updatedAt: number;
+  lastMutationId?: string;
 };
 
 export type TrackedEntityInfo = {
@@ -106,7 +107,8 @@ export function addDailyStudyTime(
   activeMs: number,
   entity: TrackedEntityInfo | null,
   completedCards = 0,
-  dateKey = getLocalDateKey()
+  dateKey = getLocalDateKey(),
+  mutationId?: string
 ): Promise<void> {
   const safeMs = Math.max(0, Math.round(activeMs));
   const safeCards = Math.max(0, Math.round(completedCards));
@@ -116,9 +118,11 @@ export function addDailyStudyTime(
     .catch(() => undefined)
     .then(async () => {
       const current = await getDailyStudyStats(plugin, dateKey);
+      if (mutationId && current.lastMutationId === mutationId) return;
       current.totalActiveMs += safeMs;
       current.totalCardsCompleted += safeCards;
       current.updatedAt = Date.now();
+      current.lastMutationId = mutationId;
 
       if (entity) {
         const previous = current.entities[entity.id] ?? {
@@ -176,22 +180,13 @@ export async function resolveTrackedEntityFromRemId(
     if (!rem) return null;
 
     for (let depth = 0; depth < 64; depth += 1) {
-      if (await rem.isDocument()) {
-        return {
-          id: rem._id,
-          kind: 'document',
-          title: await titleForRem(plugin, rem, 'document'),
-        };
-      }
-
+      // A folder can also be a document; test the folder flag first.
       if (await rem.isFolder()) {
-        return {
-          id: rem._id,
-          kind: 'folder',
-          title: await titleForRem(plugin, rem, 'folder'),
-        };
+        return { id: rem._id, kind: 'folder', title: await titleForRem(plugin, rem, 'folder') };
       }
-
+      if (await rem.isDocument()) {
+        return { id: rem._id, kind: 'document', title: await titleForRem(plugin, rem, 'document') };
+      }
       rem = await rem.getParentRem();
       if (!rem) return null;
     }
