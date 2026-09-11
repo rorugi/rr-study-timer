@@ -1,0 +1,20 @@
+{
+  "manifestVersion": 1,
+  "id": "rr-study-timer",
+  "name": "RR Study Timer",
+  "author": "Roland Russwurm",
+  "enableOnMobile": true,
+  "version": {
+    "major": 0,
+    "minor": 5,
+    "patch": 1
+  },
+  "description": "Active flashcard learning time with inactivity pausing, rename-safe document/folder tracking, home summary, and daily/weekly statistics.",
+  "requestNative": false,
+  "requiredScopes": [
+    {
+      "type": "All",
+      "level": "Read"
+    }
+  ]
+}

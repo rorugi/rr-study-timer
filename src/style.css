@@ -1,0 +1,507 @@
+.study-timer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 1.2;
+  white-space: nowrap;
+  color: var(--rn-clr-content-primary, inherit);
+  background: var(--rn-clr-background-secondary, rgba(127, 127, 127, 0.08));
+  user-select: none;
+}
+
+.study-timer__item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.study-timer__label {
+  opacity: 0.58;
+}
+
+.study-timer__value {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.study-timer__recall {
+  padding-left: 8px;
+  border-left: 1px solid rgba(127, 127, 127, 0.25);
+}
+
+@media (max-width: 700px) {
+  .study-timer {
+    gap: 7px;
+    font-size: 11px;
+    padding: 3px 5px;
+  }
+
+  .study-timer__label--optional {
+    display: none;
+  }
+}
+
+.study-timer--paused {
+  opacity: 0.7;
+}
+
+.study-timer__paused-label {
+  font-size: 10px;
+  font-weight: 600;
+  opacity: 0.7;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 700px) {
+  .study-timer__paused-label {
+    display: none;
+  }
+}
+
+/* Daily statistics block on the flashcard overview page */
+.daily-stats {
+  box-sizing: border-box;
+  width: 100%;
+  margin: 10px 0;
+  padding: 22px 24px;
+  border: 1px solid var(--rn-clr-border-primary, rgba(127, 127, 127, 0.32));
+  border-radius: 14px;
+  background: var(--rn-clr-background-primary, transparent);
+  color: var(--rn-clr-content-primary, inherit);
+  font-family: inherit;
+}
+
+.daily-stats__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.daily-stats__eyebrow {
+  margin-bottom: 7px;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.daily-stats__total {
+  font-size: 34px;
+  font-weight: 750;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.daily-stats__active-label {
+  padding-bottom: 3px;
+  font-size: 12px;
+  opacity: 0.55;
+  white-space: nowrap;
+}
+
+.daily-stats__divider {
+  height: 1px;
+  margin: 20px 0 16px;
+  background: var(--rn-clr-border-primary, rgba(127, 127, 127, 0.25));
+}
+
+.daily-stats__section-title {
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 650;
+  opacity: 0.7;
+}
+
+.daily-stats__documents {
+  display: flex;
+  flex-direction: column;
+}
+
+.daily-stats__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  min-height: 38px;
+  border-top: 1px solid rgba(127, 127, 127, 0.13);
+}
+
+.daily-stats__row:first-child {
+  border-top: 0;
+}
+
+.daily-stats__document {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+}
+
+.daily-stats__time {
+  flex: 0 0 auto;
+  font-size: 14px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+.daily-stats__row--muted,
+.daily-stats__empty,
+.daily-stats__note {
+  opacity: 0.58;
+}
+
+.daily-stats__empty {
+  padding: 8px 0 4px;
+  font-size: 14px;
+}
+
+.daily-stats__note {
+  margin-top: 14px;
+  font-size: 11px;
+}
+
+@media (max-width: 700px) {
+  .daily-stats {
+    margin: 8px 0;
+    padding: 18px 18px;
+    border-radius: 12px;
+  }
+
+  .daily-stats__eyebrow {
+    font-size: 16px;
+  }
+
+  .daily-stats__total {
+    font-size: 30px;
+  }
+
+  .daily-stats__active-label {
+    display: none;
+  }
+
+  .daily-stats__row {
+    min-height: 36px;
+  }
+}
+
+/* Weekly active-learning chart shown on the flashcard learning progress page. */
+.study-overview-stats {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 14px;
+}
+
+.weekly-time {
+  box-sizing: border-box;
+  width: 100%;
+  margin: 8px 0 0;
+  padding: 22px 24px 18px;
+  border: 1px solid var(--rn-clr-border-primary, rgba(127, 127, 127, 0.32));
+  border-radius: 14px;
+  background: var(--rn-clr-background-primary, transparent);
+  color: var(--rn-clr-content-primary, inherit);
+  font-family: inherit;
+}
+
+.weekly-time__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.weekly-time__eyebrow {
+  margin-bottom: 6px;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.weekly-time__summary {
+  font-size: 29px;
+  font-weight: 750;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.weekly-time__average {
+  padding-bottom: 3px;
+  font-size: 12px;
+  opacity: 0.58;
+  text-align: right;
+}
+
+.weekly-time__chart-wrap {
+  display: flex;
+  width: 100%;
+  min-height: 190px;
+}
+
+.weekly-time__axis {
+  box-sizing: border-box;
+  display: flex;
+  flex: 0 0 48px;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
+  height: 148px;
+  padding-right: 8px;
+  font-size: 10px;
+  line-height: 1;
+  opacity: 0.48;
+  font-variant-numeric: tabular-nums;
+}
+
+.weekly-time__plot {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 190px;
+}
+
+.weekly-time__grid {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--rn-clr-border-primary, rgba(127, 127, 127, 0.22));
+  pointer-events: none;
+}
+
+.weekly-time__grid--top {
+  top: 0;
+}
+
+.weekly-time__grid--middle {
+  top: 74px;
+}
+
+.weekly-time__grid--bottom {
+  top: 148px;
+}
+
+.weekly-time__bars {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.weekly-time__day {
+  display: grid;
+  grid-template-rows: 148px 22px 18px;
+  min-width: 0;
+  align-items: end;
+  justify-items: center;
+}
+
+.weekly-time__bar-slot {
+  display: flex;
+  width: min(28px, 62%);
+  height: 148px;
+  align-items: flex-end;
+}
+
+.weekly-time__bar {
+  width: 100%;
+  min-height: 0;
+  border-radius: 9px 9px 4px 4px;
+  background: var(--rn-clr-background-accent, #2563eb);
+  opacity: 0.78;
+  transition: height 160ms ease;
+}
+
+.weekly-time__bar--today {
+  opacity: 1;
+}
+
+.weekly-time__weekday {
+  align-self: center;
+  font-size: 11px;
+  opacity: 0.62;
+}
+
+.weekly-time__value {
+  align-self: start;
+  max-width: 100%;
+  overflow: hidden;
+  font-size: 10px;
+  opacity: 0.48;
+  font-variant-numeric: tabular-nums;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.weekly-time__unit {
+  margin-top: 1px;
+  text-align: right;
+  font-size: 10px;
+  opacity: 0.45;
+}
+
+@media (max-width: 700px) {
+  .study-overview-stats {
+    gap: 10px;
+  }
+
+  .weekly-time {
+    padding: 18px 14px 14px;
+    border-radius: 12px;
+  }
+
+  .weekly-time__header {
+    margin-bottom: 16px;
+  }
+
+  .weekly-time__eyebrow {
+    font-size: 16px;
+  }
+
+  .weekly-time__summary {
+    font-size: 27px;
+  }
+
+  .weekly-time__average {
+    max-width: 120px;
+    font-size: 10px;
+  }
+
+  .weekly-time__axis {
+    flex-basis: 40px;
+    font-size: 9px;
+  }
+
+  .weekly-time__bars {
+    gap: 5px;
+  }
+
+  .weekly-time__bar-slot {
+    width: min(24px, 68%);
+  }
+}
+
+/* Home-page summary. WidgetLocation.Index is RemNote's supported home-page
+   extension point. Styled to sit visually close to the native green goal card. */
+.home-study-summary {
+  box-sizing: border-box;
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 1px minmax(0, 1fr);
+  align-items: center;
+  width: 100%;
+  margin: 8px 0 12px;
+  padding: 15px 18px 14px;
+  border: 1px solid rgba(74, 222, 128, 0.58);
+  border-radius: 12px;
+  background: rgba(4, 78, 18, 0.88);
+  color: #f3fff5;
+  font-family: inherit;
+}
+
+.home-study-summary__metric {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: 11px;
+}
+
+.home-study-summary__icon {
+  flex: 0 0 auto;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.home-study-summary__value {
+  overflow: hidden;
+  font-size: 22px;
+  font-weight: 750;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.home-study-summary__label {
+  margin-top: 3px;
+  overflow: hidden;
+  font-size: 11px;
+  line-height: 1.2;
+  opacity: 0.72;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.home-study-summary__separator {
+  width: 1px;
+  height: 42px;
+  justify-self: center;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.home-study-summary__brand {
+  position: absolute;
+  right: 10px;
+  bottom: 5px;
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  opacity: 0.34;
+}
+
+.daily-stats__totals-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 34px;
+}
+
+.daily-stats__metric-label {
+  margin-top: 4px;
+  font-size: 11px;
+  opacity: 0.58;
+}
+
+@media (max-width: 700px) {
+  .home-study-summary {
+    margin: 6px 0 10px;
+    padding: 13px 13px 12px;
+    border-radius: 11px;
+  }
+
+  .home-study-summary__metric {
+    gap: 8px;
+  }
+
+  .home-study-summary__icon {
+    font-size: 20px;
+  }
+
+  .home-study-summary__value {
+    font-size: 18px;
+  }
+
+  .home-study-summary__label {
+    font-size: 9px;
+  }
+
+  .home-study-summary__separator {
+    height: 36px;
+  }
+
+  .home-study-summary__brand {
+    font-size: 7px;
+  }
+
+  .daily-stats__totals-row {
+    gap: 24px;
+  }
+}
