@@ -1,6 +1,20 @@
 import { renderWidget, usePlugin } from '@remnote/plugin-sdk';
-import { useRef, useState } from 'react';
+import { CSSProperties, useRef, useState } from 'react';
 import '../style.css';
+
+const confetti = Array.from({ length: 80 }, (_, i) => {
+  const angle = i * 2.39996;
+  const radius = 100 + (i * 47 % 150);
+  return {
+    '--burst-x': `${Math.cos(angle) * radius}px`,
+    '--burst-y': `${Math.sin(angle) * radius - 70}px`,
+    '--fall-y': `${Math.sin(angle) * radius + 320}px`,
+    '--spin': `${(i % 2 ? 1 : -1) * (360 + i * 29)}deg`,
+    backgroundColor: ['#ff5252', '#ffca28', '#40c4ff', '#69f0ae', '#b388ff', '#ff80ab'][i % 6],
+    animationDelay: `${i % 5 * 35}ms`,
+    borderRadius: i % 3 === 0 ? '50%' : '1px',
+  } as CSSProperties;
+});
 
 export function PomodoroComplete() {
   const plugin = usePlugin();
@@ -16,6 +30,9 @@ export function PomodoroComplete() {
   };
   const root = (plugin.rootURL ?? '.').replace(/\/$/, '');
   return <div className="pomodoro-celebration">
+    {(loaded || failed) && <div className="pomodoro-confetti" aria-hidden="true">
+      {confetti.map((style, i) => <i key={i} style={style} />)}
+    </div>}
     <button type="button" className={`pomodoro-celebration__button${loaded || failed ? ' pomodoro-celebration__button--ready' : ''}`}
       aria-label="Pomodoro complete. Click to close." onClick={() => void close()}>
       {!failed && <img src={`${root}/pomodoro-tomato-comic.png`} alt="Smiling tomato giving a thumbs-up"

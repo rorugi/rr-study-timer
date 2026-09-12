@@ -37,6 +37,11 @@ test('upgrading replaces the floating widget; review menu and slash command open
     window: { openWidgetInPane: async () => {} },
   };
   await activate(plugin);
+  assert.equal(widgets.has('daily_statistics:LearningProgressPage'), false);
+  for (const card of ['weekly_statistics', 'today_statistics', 'pomodoro_statistics']) {
+    assert.ok(widgets.has(`${card}:LearningProgressPage`));
+  }
+  assert.ok(widgets.has('daily_statistics:Pane'));
   assert.deepEqual(widgets.get('pomodoro_complete:Popup'), { dimensions: { height: 'auto', width: 420 } });
   assert.equal(widgets.has('settings:FloatingWidget'), false);
   assert.deepEqual(widgets.get('settings:Popup'), { dimensions: { height: 'auto', width: 480 } });

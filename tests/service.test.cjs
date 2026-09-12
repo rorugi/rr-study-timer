@@ -45,7 +45,7 @@ test('live settings reach the status row and completion produces one service not
     now+=1000;await settle();assert.equal(session.get(TIMER_STATE_KEY).pomodoro.remainingMs,59000);
     now+=59000;await settle();assert.equal(notifications.length,2);assert.equal(popups.length,2);
     await stop();stop=null;
-    const history=await getDailyPomodoros(plugin);assert.equal(history.length,2);
+    const history=await getDailyPomodoros(plugin,getLocalDateKey(new Date(now)));assert.equal(history.length,2);
     assert.ok(history.every(record=>record.durationMs===60000));
     assert.ok(history[1].startedAt>history[0].completedAt);
   }finally{if(stop)await stop();Date.now=realNow;}

@@ -18,7 +18,17 @@
   user-select: none;
 }
 
-.pomodoro-celebration { box-sizing: border-box; width: 100%; min-height: 400px; padding: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+.pomodoro-celebration { position: relative; isolation: isolate; overflow: hidden; box-sizing: border-box; width: 100%; min-height: 400px; padding: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+.pomodoro-confetti { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+.pomodoro-confetti i { position: absolute; top: 50%; left: 50%; width: 8px; height: 12px; opacity: 0; animation: pomodoro-confetti-burst 2400ms ease-out both; }
+@keyframes pomodoro-confetti-burst {
+  0% { transform: translate(-50%, -50%) scale(.2) rotate(0deg); opacity: 0; }
+  5% { opacity: 1; }
+  35% { transform: translate(var(--burst-x), var(--burst-y)) scale(1) rotate(var(--spin)); opacity: 1; }
+  75% { opacity: 1; }
+  100% { transform: translate(var(--burst-x), var(--fall-y)) scale(.7) rotate(calc(var(--spin) * 2)); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) { .pomodoro-confetti { display: none; } .pomodoro-confetti i { animation: none; } }
 .pomodoro-celebration__button { display: block; width: 100%; max-width: 380px; padding: 0; border: 0; background: transparent; cursor: pointer; transform-origin: center center; opacity: 0; }
 .pomodoro-celebration__button img { display: block; width: 100%; height: auto; user-select: none; }
 .pomodoro-celebration__button--ready { opacity: 1; animation: pomodoro-zoom-in 650ms cubic-bezier(.2,.8,.2,1) both; }
@@ -246,7 +256,7 @@
   gap: 14px;
 }
 
-.pomodoro-stats { grid-column: 1 / -1; order: 1; padding: 20px 24px; border: 1px solid var(--rn-clr-border-primary, rgba(127,127,127,.32)); border-radius: 14px; color: var(--rn-clr-content-primary, inherit); background: var(--rn-clr-background-primary, transparent); min-width: 0; }
+.pomodoro-stats { box-sizing: border-box; padding: 20px 24px; border: 1px solid var(--rn-clr-border-primary, rgba(127,127,127,.32)); border-radius: 14px; color: var(--rn-clr-content-primary, inherit); background: var(--rn-clr-background-primary, transparent); min-width: 0; }
 .pomodoro-stats h2 { margin: 0 0 6px; font-family: inherit; font-size: 17px; font-weight: 700; line-height: 1.2; }
 .pomodoro-stats p { margin: 0 0 12px; }
 .pomodoro-stats__empty { opacity: .65; font-size: 12px; }

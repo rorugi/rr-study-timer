@@ -24,8 +24,12 @@ async function onActivate(plugin: ReactRNPlugin) {
     quickCode: 'rrstudytimer', keywords: 'RR Study Timer settings pomodoro status bar',
     description: 'Open RR Study Timer settings.', action: openSettings });
   // Verified in the user's desktop app. DeckPage did not render on Flashcard Home.
-  await plugin.app.registerWidget('daily_statistics', WidgetLocation.LearningProgressPage, {
-    dimensions: { height: 'auto', width: '100%' } });
+  // Give each card its own host grid slot instead of nesting all cards in one column.
+  await plugin.app.unregisterWidget('daily_statistics', WidgetLocation.LearningProgressPage);
+  for (const widget of ['weekly_statistics', 'today_statistics', 'pomodoro_statistics']) {
+    await plugin.app.registerWidget(widget, WidgetLocation.LearningProgressPage, {
+      dimensions: { height: 'auto', width: '100%' } });
+  }
   await plugin.app.registerWidget('daily_statistics', WidgetLocation.Pane, {
     dimensions: { height: 'auto', width: '100%' } });
   await plugin.app.registerCommand({ id: 'show-study-overview', name: 'Lernzeit anzeigen',
