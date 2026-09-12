@@ -1,5 +1,6 @@
 import { declareIndexPlugin, type ReactRNPlugin, WidgetLocation, PluginCommandMenuLocation } from '@remnote/plugin-sdk';
 import { startTracking } from '../tracking_service';
+import { statisticsHostCSS } from '../statistics_layout';
 import '../style.css';
 import '../index.css';
 let stopTracking: (() => Promise<void>) | undefined;
@@ -24,12 +25,14 @@ async function onActivate(plugin: ReactRNPlugin) {
     quickCode: 'rrstudytimer', keywords: 'RR Study Timer settings pomodoro status bar',
     description: 'Open RR Study Timer settings.', action: openSettings });
   // Verified in the user's desktop app. DeckPage did not render on Flashcard Home.
-  // Give each card its own host grid slot instead of nesting all cards in one column.
-  await plugin.app.unregisterWidget('daily_statistics', WidgetLocation.LearningProgressPage);
+  await plugin.app.registerCSS('rr-study-timer-statistics-layout', statisticsHostCSS);
+  // All widgets at this location share one host outlet. Use one responsive grid
+  // within it, and remove the separate registrations left by version 0.6.4.
   for (const widget of ['weekly_statistics', 'today_statistics', 'pomodoro_statistics']) {
-    await plugin.app.registerWidget(widget, WidgetLocation.LearningProgressPage, {
-      dimensions: { height: 'auto', width: '100%' } });
+    await plugin.app.unregisterWidget(widget, WidgetLocation.LearningProgressPage);
   }
+  await plugin.app.registerWidget('daily_statistics', WidgetLocation.LearningProgressPage, {
+    dimensions: { height: 'auto', width: '100%' } });
   await plugin.app.registerWidget('daily_statistics', WidgetLocation.Pane, {
     dimensions: { height: 'auto', width: '100%' } });
   await plugin.app.registerCommand({ id: 'show-study-overview', name: 'Lernzeit anzeigen',
