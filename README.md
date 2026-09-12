@@ -6,7 +6,14 @@ See how long you have studied, how many card reviews you have completed, and whi
 
 Author: Roland Russwurm · Plugin ID: `rr-study-timer`
 
-## What's new in 0.6.2
+## What's new in 0.6.3
+
+- Removed the extra completion text from the status bar. The finished countdown blinks at 0:00; click it to start another full interval immediately.
+- Restarting from the countdown preserves your layout, configured duration, and study statistics. The tomato popup remains click-to-close.
+
+- Completed Pomodoros are saved with their start time, finish time, and active duration. The statistics page now has a Pomodoro box with one tomato per completion today; hover over a tomato for timing.
+
+## Added in 0.6.2
 
 - When a Pomodoro finishes, a centered tomato comic popup zooms into view. Click the image to close it.
 - The animation waits for the bundled image to load and respects reduced-motion preferences. The existing countdown and completion notification remain available.
@@ -106,8 +113,8 @@ In **… → RR Study Timer**, enable **Pomodoro Timer** and enter a duration in
 
 - Add **Pomodoro time** to any status-bar position to show the countdown.
 - A blue line spans the top of the status bar at the start and shrinks toward zero.
-- At zero, the displayed time blinks, a single RemNote notification says the Pomodoro is complete, and the tomato comic zooms into view in a centered popup. Click the tomato to close it. If Pomodoro time is not selected, a completion indicator still appears.
-- The timer stays at zero until you choose **Restart Pomodoro on Save** and save, change its duration, or turn the feature off and on.
+- At zero, the displayed time blinks, a single RemNote notification says the Pomodoro is complete, and the tomato comic zooms into view in a centered popup. Click the tomato to close it. If Pomodoro time is not selected, a clickable blinking 0:00 timer still appears, without completion text.
+- The timer stays at zero until you click the blinking countdown. Clicking starts a fresh interval with the configured duration and refills the blue line. You can also restart through settings.
 - Changing only the status-bar layout preserves the current countdown. Leaving and re-entering review also preserves it while the plugin remains running.
 - Reloading RemNote or restarting the plugin starts a fresh interval. The enabled state, duration, and status-bar layout are saved; a partially completed countdown is not synchronized between devices.
 
@@ -166,6 +173,14 @@ The document/folder list is sorted by active time, highest first. Time that cann
 Statistics use your device's local date. Active time crossing midnight is split between the two dates; a completed review is counted on the date when completion is reported.
 
 The overview refreshes automatically, but saved totals can trail the live timer by a few seconds.
+
+## Pomodoro statistics
+
+The **Pomodoro** box on the flashcard statistics page (and the separate overview pane) shows one small tomato for each completed Pomodoro today. Five completed Pomodoros produce five icons. Hover over an icon to see the start and finish date/time and the active duration in minutes.
+
+Completions are saved in RemNote's synchronized plugin storage and grouped by the local date when they finish. The start time is the beginning of the first active study interval, and the finish time is when the active countdown reaches zero. Breaks can therefore make the elapsed time longer than the recorded active duration. Restarting or dismissing a popup does not add another completion.
+
+This history begins with version 0.6.3; earlier completions cannot be reconstructed. Pending saves are retried while the plugin runs, but abruptly closing RemNote before a save finishes can lose a pending record.
 
 ## Weekly overview
 
@@ -331,6 +346,10 @@ Persistent daily statistics:
 ```text
 rr-study-timer:daily:v1:<YYYY-MM-DD>
 ```
+
+Completed Pomodoro records (unique ID, start timestamp, completion timestamp, and active duration):
+
+    rr-study-timer:pomodoros:v1:<YYYY-MM-DD>
 
 Status-bar layout and Pomodoro preferences:
 

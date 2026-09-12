@@ -2,7 +2,7 @@ import { renderWidget, usePlugin } from '@remnote/plugin-sdk';
 import { useEffect, useState } from 'react';
 import { withDeadline } from '../deadline';
 import type { StatusSnapshot } from '../tracking_service';
-import { defaultSettings, METRICS, type Metric } from '../settings';
+import { defaultSettings, METRICS, POMODORO_RESTART_KEY, type Metric } from '../settings';
 import { getStatusTotals, type StatusTotals } from '../status_totals';
 import { getLocalDateKey } from '../daily_stats';
 import '../style.css';
@@ -14,6 +14,7 @@ export function StudyTimer() {
   const plugin = usePlugin();
   const [state, setState] = useState<StatusSnapshot>();
   const [totals, setTotals] = useState<StatusTotals>();
+  const [restarting, setRestarting] = useState(false);
   const settings = state?.settings ?? defaultSettings();
   const needsTotals = settings.positions.some(value => ['today', 'document', 'group'].includes(value));
   const entityId = state?.entityId;
@@ -68,6 +69,19 @@ export function StudyTimer() {
   }, [plugin]);
   const matchingTotals = totals?.date === date && totals.entityId === entityId ? totals : undefined;
   const pomodoro = state?.pomodoro;
+  const restartPomodoro = async () => {
+    if (restarting || !pomodoro?.finished) return;
+    setRestarting(true);
+    try {
+      await withDeadline(plugin.storage.setSession(POMODORO_RESTART_KEY, { id: `${Date.now()}-${Math.random()}` }));
+    } catch {
+      void plugin.app.toast('Could not restart Pomodoro. Please click the timer again.');
+    } finally { setRestarting(false); }
+  };
+  const restartButton = (key: string | number) => <button key={key} type="button"
+    className="study-timer__metric study-timer__restart study-timer__finished"
+    title="Click to restart Pomodoro" aria-label="Restart Pomodoro" disabled={restarting}
+    onClick={() => void restartPomodoro()}><Icon type="pomodoro" />0:00</button>;
   const dailyTime = (ms: number | null | undefined) => ms == null ? '–' : clock(ms);
   const content = (metric: Metric) => {
     switch (metric) {
@@ -92,11 +106,9 @@ export function StudyTimer() {
       aria-valuemin={0} aria-valuemax={Math.round(pomodoro.durationMs / 1000)} aria-valuenow={Math.ceil(pomodoro.remainingMs / 1000)}>
       <div style={{ transform: `scaleX(${pomodoro.remainingMs / pomodoro.durationMs})` }} />
     </div>}
-    {settings.positions.map((metric, index) => <span key={index} title={metricTitle(metric)} aria-label={metricTitle(metric)}
-      className={`study-timer__metric${metric === 'pomodoro' && pomodoro?.finished ? ' study-timer__finished' : ''}`}>{content(metric)}</span>)}
-    {pomodoro?.finished && <span className="study-timer__completion" role="status">
-      {!settings.positions.includes('pomodoro') && <span className="study-timer__finished">0:00 </span>}Pomodoro complete
-    </span>}
+    {settings.positions.map((metric, index) => metric === 'pomodoro' && pomodoro?.finished ? restartButton(index) :
+      <span key={index} title={metricTitle(metric)} aria-label={metricTitle(metric)} className="study-timer__metric">{content(metric)}</span>)}
+    {pomodoro?.finished && !settings.positions.includes('pomodoro') && restartButton('completed')}
   </div>;
 }
 

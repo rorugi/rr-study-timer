@@ -47,7 +47,7 @@ export class TimerEngine {
         this.credit(this.lastTick, end);
         this.sessionMs += ms;
         this.cardMs += ms;
-        this.pomodoro.advance(ms);
+        this.pomodoro.advance(ms, end);
       }
     }
     this.lastTick = now;

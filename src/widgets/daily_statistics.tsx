@@ -10,6 +10,7 @@ import {
   resolveCurrentTrackedEntity,
 } from '../daily_stats';
 import '../style.css';
+import { PomodoroStats } from '../components/pomodoro_stats';
 
 function formatDuration(milliseconds: number): string {
   const totalMinutes = Math.floor(Math.max(0, milliseconds) / 60000);
@@ -117,6 +118,7 @@ export function DailyStatistics() {
 
   return (
     <div className="study-overview-stats">
+      <PomodoroStats />
       <section className="weekly-time" aria-label="Lernzeit diese Woche">
         <div className="weekly-time__header">
           <div>
