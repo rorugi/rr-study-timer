@@ -2,8 +2,11 @@ import { QueueEvent, type RNPlugin } from '@remnote/plugin-sdk';
 import { addDailyStudyTime, resolveTrackedEntityFromRemId } from './daily_stats';
 import { TimerEngine } from './timer_engine';
 import { withDeadline } from './deadline';
+import { defaultSettings, normalizeSettings, SETTINGS_KEY, type TimerSettings } from './settings';
+import type { TimerSnapshot } from './timer_engine';
 
 export const TIMER_STATE_KEY = 'rr-study-timer:session:v2';
+export type StatusSnapshot = TimerSnapshot & { settings: TimerSettings };
 
 export async function startTracking(plugin: RNPlugin, options = { rpcTimeoutMs: 3000, pollIntervalMs: 1000 }) {
   const rpc = <T,>(value: Promise<T>) => withDeadline(value, options.rpcTimeoutMs);
@@ -19,6 +22,8 @@ export async function startTracking(plugin: RNPlugin, options = { rpcTimeoutMs: 
   let publishing: Promise<void> | undefined;
   let polling = false;
   let checkingVisibility = false;
+  let checkingSettings = false;
+  let displaySettings = defaultSettings();
   const listeners: Array<[string, (data?: unknown) => void]> = [];
   // Bound storage RPCs inside the writer, so its own serialization can recover.
   const writer = { storage: {
@@ -28,7 +33,7 @@ export async function startTracking(plugin: RNPlugin, options = { rpcTimeoutMs: 
 
   const publish = () => {
     if (publishing) return publishing;
-    publishing = rpc(plugin.storage.setSession(TIMER_STATE_KEY, { ...engine.snapshot(Date.now()), error }))
+    publishing = rpc(plugin.storage.setSession(TIMER_STATE_KEY, { ...engine.snapshot(Date.now()), settings: displaySettings, error }))
       .catch(cause => console.error('RR Study Timer status', cause))
       .finally(() => { publishing = undefined; });
     return publishing;
@@ -55,6 +60,11 @@ export async function startTracking(plugin: RNPlugin, options = { rpcTimeoutMs: 
     chain = chain.then(async () => {
       try { await work(); }
       catch (cause) { error = 'Kartenabfrage verzögert – erneuter Versuch folgt.'; console.error('RR Study Timer queue', cause); }
+      if (engine.pomodoro.takeNotification()) {
+        // Consume once in the service, even if several status widgets are mounted.
+        void rpc(plugin.app.toast('RR Study Timer: Pomodoro complete — time for a break!'))
+          .catch(cause => console.error('RR Study Timer notification', cause));
+      }
       // Neither persistence nor the session bridge blocks subsequent events/ticks.
       if (persist) void flush();
       void publish();
@@ -148,6 +158,21 @@ export async function startTracking(plugin: RNPlugin, options = { rpcTimeoutMs: 
       }).catch(cause => console.error('RR Study Timer visibility', cause))
       .finally(() => { checkingVisibility = false; });
   };
+  const checkSettings = () => {
+    if (checkingSettings || stopped) return;
+    checkingSettings = true;
+    void rpc(plugin.storage.getSynced(SETTINGS_KEY)).then(value => {
+      if (stopped) return;
+      const settings = normalizeSettings(value);
+      void enqueue(() => {
+        engine.advance(Date.now());
+        engine.pomodoro.configure(settings);
+        displaySettings = settings;
+      });
+    }).catch(cause => console.error('RR Study Timer settings', cause))
+      .finally(() => { checkingSettings = false; });
+  };
+  checkSettings();
   load();
   const timer = setInterval(() => {
     if (stopped) return;
@@ -157,6 +182,7 @@ export async function startTracking(plugin: RNPlugin, options = { rpcTimeoutMs: 
     void enqueue(() => engine.advance(now), persist);
     reconcile();
     checkQueueVisibility();
+    checkSettings();
   }, options.pollIntervalMs);
   return async () => {
     stopped = true; revision++; clearInterval(timer);

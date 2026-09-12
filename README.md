@@ -6,13 +6,22 @@ See how long you have studied, how many card reviews you have completed, and whi
 
 Author: Roland Russwurm · Plugin ID: `rr-study-timer`
 
-## What's new in 0.5.9
+## What's new in 0.6.0
+
+- Open **RR Study Timer** from the flashcard review **…** menu to configure the status bar.
+- Choose any metric for each numbered position, add or remove positions, and repeat metrics if desired. The default remains session time, card count, and average time per card.
+- Added total time today, current document time today, parent-folder group time today, and Pomodoro time.
+- Added an optional active-study Pomodoro countdown, off by default and set to 25 minutes. A blue line at the top of the status bar shrinks as time runs out.
+- At zero, the countdown blinks and a RemNote notification announces completion. Restart from settings when ready for another interval.
+- Aligned the manifest, package, and lockfile versions at 0.6.0.
+
+## Changed in 0.5.9
 
 - Updated plugin logo and a clearer, user-facing description.
 - The plugin manifest now identifies the plugin as **0.5.9**.
 - The tracking behavior and overview placement from 0.5.8 remain unchanged.
 
-**Version note:** `public/manifest.json` currently declares 0.5.9, while `package.json` still declares 0.5.8. The installation package includes the plugin manifest. This README describes the current repository; the version numbers in the source metadata have not yet been aligned.
+The 0.5.9 manifest update originally left package metadata at 0.5.8; 0.6.0 aligns these values.
 
 ## Changed in 0.5.8
 
@@ -58,14 +67,49 @@ The 0.5.6 and 0.5.7 notes summarize the history recorded in the 0.5.8 documentat
 
 The current plugin interface uses German labels. This README explains them in English; use the exact German command above when searching.
 
+## Status bar settings
+
+During flashcard review, open the **…** menu and select **RR Study Timer**. The settings popup has a scrollable body with **Save** and **Cancel** at the bottom. Settings apply during review after saving; no plugin restart is needed for the status bar or Pomodoro options.
+
+Each numbered position has the same dropdown:
+
+| Option | Display |
+| --- | --- |
+| Session time | Clock icon and active time in the current review session. |
+| Number of cards | Completed reviews in the current session. |
+| Average time per card | Average active time for completed reviews. |
+| Total time today | Calendar-day icon and recorded active time today, across sessions. |
+| Document time today | Text-document icon and today's time for the current card's document. |
+| Group time today | Folder icon and today's time in the document's nearest parent folder, including documents in its subfolders. |
+| Pomodoro time | Timer icon and remaining time, or Off when disabled. |
+
+Use **Add position** for more values. Remove a position with its **×** button; at least one position remains. Duplicate choices are allowed. **Restore default layout** restores session time, number of cards, and average time per card without changing Pomodoro settings.
+
+Hover over a value to see its meaning and, where available, its document or group name. A dash means no corresponding document or parent folder is available, or the total is still loading. Daily values come from saved statistics and can lag the live timer by a few seconds.
+
+Group time uses the current folder hierarchy, including existing daily records. Renaming a folder keeps its identity, while moving documents can change the current group sum. Historical records whose documents have been deleted cannot be assigned to a parent folder. Cards tracked directly to a folder use that folder as their group and show no separate document total. The daily overview retains its original one-container-per-entry breakdown.
+
+## Pomodoro Timer
+
+In **… → RR Study Timer**, enable **Pomodoro Timer** and enter a duration in minutes (default **25**, allowed range **1–1,440**). Save to start a fresh countdown. Only active review time counts: inactivity, hidden review surfaces, lookback, and time outside the review queue do not consume the interval.
+
+- Add **Pomodoro time** to any status-bar position to show the countdown.
+- A blue line spans the top of the status bar at the start and shrinks toward zero.
+- At zero, the displayed time blinks and a single RemNote notification says the Pomodoro is complete. If Pomodoro time is not selected, a completion indicator still appears.
+- The timer stays at zero until you choose **Restart Pomodoro on Save** and save, change its duration, or turn the feature off and on.
+- Changing only the status-bar layout preserves the current countdown. Leaving and re-entering review also preserves it while the plugin remains running.
+- Reloading RemNote or restarting the plugin starts a fresh interval. The enabled state, duration, and status-bar layout are saved; a partially completed countdown is not synchronized between devices.
+
+You can show document or group time beside the countdown to see how much study you have accumulated in that area. The countdown measures active review time across cards; switching documents does not start a separate Pomodoro. Automatic break intervals and automatic repeats are not included. Users who prefer reduced motion receive a steady, emphasized completion indicator instead of blinking.
+
 ## Flashcard review row
 
-The review row contains three values:
+By default, the review row contains three values:
 
 | Display | Meaning |
 | --- | --- |
-| ⏱ / ⏸ and time | Active time in the current review session, displayed as minutes:seconds. The pause symbol indicates a hidden or inactive state. |
-| `Karten` | Completed card reviews in the current session. |
+| Clock icon and time | Active time in the current review session, displayed as minutes:seconds. Hover to see whether it is paused. |
+| `cards` | Completed card reviews in the current session. |
 | `Ø` | Average active time per completed card review, in seconds. A dash appears before the first completion. |
 
 A new queue session resets the session counters. The daily totals remain stored and accumulate across sessions.
@@ -277,6 +321,12 @@ Persistent daily statistics:
 rr-study-timer:daily:v1:<YYYY-MM-DD>
 ```
 
+Status-bar layout and Pomodoro preferences:
+
+```text
+rr-study-timer:settings:v1
+```
+
 Session timer state:
 
 ```text
@@ -292,6 +342,8 @@ rr-study-timer:queue-visibility:v1
 ### Verification
 
 The regression tests cover inactivity clipping and resumption, hidden review surfaces, queue exit, local midnight, card attribution, lookback exclusion, serialized storage writes, retry deduplication, stable document/folder identity, Monday-based weeks, duplicate card events, delayed completion events, and recovery from stalled SDK calls.
+
+Additional tests cover configurable positions, invalid settings, parent-folder totals, active-time Pomodoro pausing, completion notification deduplication, restart, and live layout changes without resetting the countdown.
 
 These tests use mocked RemNote APIs. Client-specific widget placement and actual review behavior still require checks in RemNote. The historical live confirmation recorded for 0.5.6 is separate from automated test coverage.
 
