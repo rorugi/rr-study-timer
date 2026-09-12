@@ -9,7 +9,8 @@ Module._load=function(id,...args){if(id==='@remnote/plugin-sdk')return {QueueEve
 const {startTracking,TIMER_STATE_KEY}=require('../src/tracking_service');
 Module._load=originalLoad;
 const {getDailyStudyStats,getLocalDateKey}=require('../src/daily_stats');
-const {SETTINGS_KEY,defaultSettings}=require('../src/settings');
+const {SETTINGS_KEY,POMODORO_RESTART_KEY,defaultSettings}=require('../src/settings');
+const {getDailyPomodoros}=require('../src/pomodoro_history');
 
 test('live settings reach the status row and completion produces one service notification',async()=>{
   const realNow=Date.now;let now=new Date(2026,8,12,12).getTime();Date.now=()=>now;
@@ -23,7 +24,7 @@ test('live settings reach the status row and completion produces one service not
     rem:{findOne:async id=>({_id:id,text:[id],isFolder:async()=>false,isDocument:async()=>true})},
     richText:{toString:async text=>text[0]},
     storage:{getSynced:async key=>key===SETTINGS_KEY?structuredClone(config):structuredClone(data.get(key)),
-      setSynced:async(key,value)=>data.set(key,structuredClone(value)),getSession:async()=>undefined,
+      setSynced:async(key,value)=>data.set(key,structuredClone(value)),getSession:async key=>session.get(key),
       setSession:async(key,value)=>session.set(key,structuredClone(value))}};
   const settle=()=>new Promise(resolve=>setTimeout(resolve,35));let stop;
   try {
@@ -37,9 +38,16 @@ test('live settings reach the status row and completion produces one service not
     assert.equal(session.get(TIMER_STATE_KEY).pomodoro.finished,true);assert.equal(notifications.length,1);
     assert.deepEqual(popups,[['pomodoro_complete',{},false]]);
     now+=5000;await settle();assert.equal(notifications.length,1);assert.equal(popups.length,1);
-    config={...config,restartToken:'new-cycle'};await settle();
+    const previousSessionMs=session.get(TIMER_STATE_KEY).sessionMs;
+    session.set(POMODORO_RESTART_KEY,{id:'clicked-timer'});await settle();
+    assert.equal(session.get(TIMER_STATE_KEY).sessionMs,previousSessionMs);
     assert.equal(session.get(TIMER_STATE_KEY).pomodoro.remainingMs,60000);
-    now+=60000;await settle();assert.equal(notifications.length,2);assert.equal(popups.length,2);
+    now+=1000;await settle();assert.equal(session.get(TIMER_STATE_KEY).pomodoro.remainingMs,59000);
+    now+=59000;await settle();assert.equal(notifications.length,2);assert.equal(popups.length,2);
+    await stop();stop=null;
+    const history=await getDailyPomodoros(plugin);assert.equal(history.length,2);
+    assert.ok(history.every(record=>record.durationMs===60000));
+    assert.ok(history[1].startedAt>history[0].completedAt);
   }finally{if(stop)await stop();Date.now=realNow;}
 });
 test('index service handles global events, first-card bootstrap and async card changes without widgets',async()=>{

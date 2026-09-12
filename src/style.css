@@ -32,7 +32,9 @@
 .study-timer__progress { position: absolute; top: 0; left: 0; right: 0; height: 3px; }
 .study-timer__progress > div { width: 100%; height: 100%; background: #2684ff; transform-origin: left center; transition: transform 0.5s linear; }
 .study-timer__finished { animation: timer-blink 1s steps(2, jump-none) infinite; color: var(--rn-clr-content-primary, inherit); font-weight: 700; }
-.study-timer__completion { font-size: 11px; }
+.study-timer__restart { font: inherit; color: inherit; background: transparent; border: 0; padding: 0; cursor: pointer; }
+.study-timer__restart:focus-visible { outline: 2px solid #2684ff; outline-offset: 2px; border-radius: 3px; }
+.study-timer__restart:disabled { cursor: wait; }
 @keyframes timer-blink { to { opacity: 0.25; } }
 @media (prefers-reduced-motion: reduce) { .study-timer__finished { animation: none; text-decoration: underline; } .study-timer__progress > div { transition: none; } }
 .timer-settings { box-sizing: border-box; width: 100%; max-width: 100%; height: auto; flex-shrink: 0; display: flex; flex-direction: column; overflow: hidden; color: var(--rn-clr-content-primary, #20242c); background: var(--rn-clr-background-primary, #fff); font: 14px/1.5 system-ui, sans-serif; }
@@ -243,6 +245,16 @@
   width: 100%;
   gap: 14px;
 }
+
+.pomodoro-stats { grid-column: 1 / -1; order: 1; padding: 20px 24px; border: 1px solid var(--rn-clr-border-primary, rgba(127,127,127,.32)); border-radius: 14px; color: var(--rn-clr-content-primary, inherit); background: var(--rn-clr-background-primary, transparent); min-width: 0; }
+.pomodoro-stats h2 { margin: 0 0 6px; font-family: inherit; font-size: 17px; font-weight: 700; line-height: 1.2; }
+.pomodoro-stats p { margin: 0 0 12px; }
+.pomodoro-stats__empty { opacity: .65; font-size: 12px; }
+.pomodoro-stats__icons { display: flex; flex-wrap: wrap; gap: 10px; }
+.pomodoro-stats__item { position: relative; display: inline-flex; border-radius: 6px; outline-offset: 3px; }
+.pomodoro-stats__item img { display: block; object-fit: contain; }
+.pomodoro-stats__tooltip { display: none; position: absolute; z-index: 10; left: 0; bottom: calc(100% + 8px); width: 230px; max-width: 65vw; padding: 8px 10px; background: #20242c; color: white; border-radius: 6px; font: 12px/1.5 system-ui, sans-serif; box-shadow: 0 2px 8px #0003; }
+.pomodoro-stats__item:hover .pomodoro-stats__tooltip, .pomodoro-stats__item:focus .pomodoro-stats__tooltip { display: block; }
 
 .study-overview-stats > .weekly-time,
 .study-overview-stats > .daily-stats {

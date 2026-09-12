@@ -1,4 +1,5 @@
 export const SETTINGS_KEY = 'rr-study-timer:settings:v1';
+export const POMODORO_RESTART_KEY = 'rr-study-timer:pomodoro-restart:v1';
 export const METRICS = [
   ['session', 'Session time'],
   ['cards', 'Number of cards'],
