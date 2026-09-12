@@ -44,7 +44,7 @@ test('upgrading replaces the floating widget; review menu and slash command open
   const menu = menus.get('rr-study-timer-settings');
   assert.equal(menu.name, 'RR Study Timer'); assert.equal(menu.location, 'QueueMenu');
   const command = commands.get('rrstudytimer');
-  assert.equal(command.name, 'rrstudytimer'); assert.equal(command.quickCode, 'rrstudytimer');
+  assert.equal(command.name, 'RR Study Timer: Settings'); assert.equal(command.quickCode, 'rrstudytimer');
   await menu.action(); await command.action();
   assert.deepEqual(opened, [{ file: 'settings', context: {} }, { file: 'settings', context: {} }]);
   await deactivate(plugin); assert.equal(stops, 1);

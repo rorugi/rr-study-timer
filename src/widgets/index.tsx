@@ -18,7 +18,7 @@ async function onActivate(plugin: ReactRNPlugin) {
   await plugin.app.registerMenuItem({ id: 'rr-study-timer-settings', name: 'RR Study Timer',
     location: PluginCommandMenuLocation.QueueMenu,
     action: openSettings });
-  await plugin.app.registerCommand({ id: 'rrstudytimer', name: 'rrstudytimer',
+  await plugin.app.registerCommand({ id: 'rrstudytimer', name: 'RR Study Timer: Settings',
     quickCode: 'rrstudytimer', keywords: 'RR Study Timer settings pomodoro status bar',
     description: 'Open RR Study Timer settings.', action: openSettings });
   // Verified in the user's desktop app. DeckPage did not render on Flashcard Home.

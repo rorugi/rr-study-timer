@@ -9,7 +9,7 @@ Author: Roland Russwurm · Plugin ID: `rr-study-timer`
 ## What's new in 0.6.1
 
 - Fixed the review-menu settings action: it now uses the same registered popup window type as RR Smart TTS, and removes the old floating-widget registration during upgrades.
-- Added `/rrstudytimer` to open settings from the slash menu. You can also find `rrstudytimer` in command search.
+- Added `/rrstudytimer` to open settings from the slash menu. You can also find **RR Study Timer: Settings** in command search.
 - The popup uses an intrinsic 400 px scrolling body with a separate footer, matching Smart TTS's sizing approach.
 
 ## Added in 0.6.0
@@ -75,7 +75,7 @@ The current plugin interface uses German labels. This README explains them in En
 
 ## Status bar settings
 
-During flashcard review, open the **…** menu and select **RR Study Timer**. You can also type `/rrstudytimer` in the editor's slash menu or find `rrstudytimer` in command search. All entry points open the same settings popup, with a scrollable body and **Save** and **Cancel** at the bottom. Settings apply during review after saving; no plugin restart is needed for the status bar or Pomodoro options. When upgrading from 0.6.0, fully reload RemNote to replace the old widget registration.
+During flashcard review, open the **…** menu and select **RR Study Timer**. You can also type `/rrstudytimer` in the editor's slash menu or find **RR Study Timer: Settings** in command search. All entry points open the same settings popup, with a scrollable body and **Save** and **Cancel** at the bottom. Settings apply during review after saving; no plugin restart is needed for the status bar or Pomodoro options. When upgrading from 0.6.0, fully reload RemNote to replace the old widget registration.
 
 Each numbered position has the same dropdown:
 
