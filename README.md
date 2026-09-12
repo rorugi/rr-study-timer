@@ -6,7 +6,12 @@ See how long you have studied, how many card reviews you have completed, and whi
 
 Author: Roland Russwurm · Plugin ID: `rr-study-timer`
 
-## What's new in 0.6.1
+## What's new in 0.6.2
+
+- When a Pomodoro finishes, a centered tomato comic popup zooms into view. Click the image to close it.
+- The animation waits for the bundled image to load and respects reduced-motion preferences. The existing countdown and completion notification remain available.
+
+## Changed in 0.6.1
 
 - Fixed the review-menu settings action: it now uses the same registered popup window type as RR Smart TTS, and removes the old floating-widget registration during upgrades.
 - Added `/rrstudytimer` to open settings from the slash menu. You can also find **RR Study Timer: Settings** in command search.
@@ -101,7 +106,7 @@ In **… → RR Study Timer**, enable **Pomodoro Timer** and enter a duration in
 
 - Add **Pomodoro time** to any status-bar position to show the countdown.
 - A blue line spans the top of the status bar at the start and shrinks toward zero.
-- At zero, the displayed time blinks and a single RemNote notification says the Pomodoro is complete. If Pomodoro time is not selected, a completion indicator still appears.
+- At zero, the displayed time blinks, a single RemNote notification says the Pomodoro is complete, and the tomato comic zooms into view in a centered popup. Click the tomato to close it. If Pomodoro time is not selected, a completion indicator still appears.
 - The timer stays at zero until you choose **Restart Pomodoro on Save** and save, change its duration, or turn the feature off and on.
 - Changing only the status-bar layout preserves the current countdown. Leaving and re-entering review also preserves it while the plugin remains running.
 - Reloading RemNote or restarting the plugin starts a fresh interval. The enabled state, duration, and status-bar layout are saved; a partially completed countdown is not synchronized between devices.

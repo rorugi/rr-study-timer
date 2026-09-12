@@ -6,6 +6,8 @@ let stopTracking: (() => Promise<void>) | undefined;
 async function onActivate(plugin: ReactRNPlugin) {
   await plugin.settings.registerNumberSetting({ id: 'idle-timeout-seconds',
     title: 'Pause after inactivity (seconds)', defaultValue: 30 });
+  await plugin.app.registerWidget('pomodoro_complete', WidgetLocation.Popup, {
+    dimensions: { height: 'auto', width: 420 } });
   stopTracking = await startTracking(plugin);
   await plugin.app.registerWidget('study_timer', WidgetLocation.QueueBelowTopBar, {
     dimensions: { height: 'auto', width: '100%' } });

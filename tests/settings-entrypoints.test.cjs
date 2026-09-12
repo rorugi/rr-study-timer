@@ -37,6 +37,7 @@ test('upgrading replaces the floating widget; review menu and slash command open
     window: { openWidgetInPane: async () => {} },
   };
   await activate(plugin);
+  assert.deepEqual(widgets.get('pomodoro_complete:Popup'), { dimensions: { height: 'auto', width: 420 } });
   assert.equal(widgets.has('settings:FloatingWidget'), false);
   assert.deepEqual(widgets.get('settings:Popup'), { dimensions: { height: 'auto', width: 480 } });
   const popupAdded = registrationEvents.findIndex(([action,file,location]) => action === 'add' && file === 'settings' && location === 'Popup');

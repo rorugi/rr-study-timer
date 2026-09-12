@@ -64,6 +64,8 @@ export async function startTracking(plugin: RNPlugin, options = { rpcTimeoutMs: 
         // Consume once in the service, even if several status widgets are mounted.
         void rpc(plugin.app.toast('RR Study Timer: Pomodoro complete — time for a break!'))
           .catch(cause => console.error('RR Study Timer notification', cause));
+        void rpc(plugin.widget.openPopup('pomodoro_complete', {}, false))
+          .catch(cause => console.error('RR Study Timer completion popup', cause));
       }
       // Neither persistence nor the session bridge blocks subsequent events/ticks.
       if (persist) void flush();

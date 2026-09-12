@@ -18,6 +18,15 @@
   user-select: none;
 }
 
+.pomodoro-celebration { box-sizing: border-box; width: 100%; min-height: 400px; padding: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+.pomodoro-celebration__button { display: block; width: 100%; max-width: 380px; padding: 0; border: 0; background: transparent; cursor: pointer; transform-origin: center center; opacity: 0; }
+.pomodoro-celebration__button img { display: block; width: 100%; height: auto; user-select: none; }
+.pomodoro-celebration__button--ready { opacity: 1; animation: pomodoro-zoom-in 650ms cubic-bezier(.2,.8,.2,1) both; }
+.pomodoro-celebration__button:focus-visible { outline: 3px solid #2684ff; outline-offset: 3px; border-radius: 16px; }
+.pomodoro-celebration__fallback { font: 24px/1.5 system-ui, sans-serif; color: var(--rn-clr-content-primary, inherit); }
+@keyframes pomodoro-zoom-in { from { transform: scale(.03); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .pomodoro-celebration__button--ready { animation: none; } }
+
 .study-timer__metric { display: inline-flex; align-items: center; gap: 5px; min-height: 26px; font-variant-numeric: tabular-nums; }
 .study-timer__metric svg { flex-shrink: 0; }
 .study-timer__progress { position: absolute; top: 0; left: 0; right: 0; height: 3px; }
