@@ -1,4 +1,4 @@
-import { declareIndexPlugin, type ReactRNPlugin, WidgetLocation } from '@remnote/plugin-sdk';
+import { declareIndexPlugin, type ReactRNPlugin, WidgetLocation, PluginCommandMenuLocation } from '@remnote/plugin-sdk';
 import { startTracking } from '../tracking_service';
 import '../style.css';
 import '../index.css';
@@ -9,6 +9,11 @@ async function onActivate(plugin: ReactRNPlugin) {
   stopTracking = await startTracking(plugin);
   await plugin.app.registerWidget('study_timer', WidgetLocation.QueueBelowTopBar, {
     dimensions: { height: 'auto', width: '100%' } });
+  await plugin.app.registerWidget('settings', WidgetLocation.FloatingWidget, {
+    dimensions: { height: 'auto', width: 480 } });
+  await plugin.app.registerMenuItem({ id: 'rr-study-timer-settings', name: 'RR Study Timer',
+    location: PluginCommandMenuLocation.QueueMenu,
+    action: async () => { await plugin.widget.openPopup('settings', undefined, false); } });
   // Verified in the user's desktop app. DeckPage did not render on Flashcard Home.
   await plugin.app.registerWidget('daily_statistics', WidgetLocation.LearningProgressPage, {
     dimensions: { height: 'auto', width: '100%' } });

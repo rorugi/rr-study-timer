@@ -1,4 +1,6 @@
 .study-timer {
+  position: relative;
+  overflow: hidden;
   flex-wrap: wrap;
   box-sizing: border-box;
   min-height: 36px;
@@ -15,6 +17,36 @@
   background: var(--rn-clr-background-secondary, rgba(127, 127, 127, 0.08));
   user-select: none;
 }
+
+.study-timer__metric { display: inline-flex; align-items: center; gap: 5px; min-height: 26px; font-variant-numeric: tabular-nums; }
+.study-timer__metric svg { flex-shrink: 0; }
+.study-timer__progress { position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+.study-timer__progress > div { width: 100%; height: 100%; background: #2684ff; transform-origin: left center; transition: transform 0.5s linear; }
+.study-timer__finished { animation: timer-blink 1s steps(2, jump-none) infinite; color: var(--rn-clr-content-primary, inherit); font-weight: 700; }
+.study-timer__completion { font-size: 11px; }
+@keyframes timer-blink { to { opacity: 0.25; } }
+@media (prefers-reduced-motion: reduce) { .study-timer__finished { animation: none; text-decoration: underline; } .study-timer__progress > div { transition: none; } }
+.timer-settings { box-sizing: border-box; width: 480px; max-width: 100vw; min-height: 400px; color: var(--rn-clr-content-primary, #20242c); background: var(--rn-clr-background-primary, #fff); font: 14px/1.5 system-ui, sans-serif; }
+.timer-settings *, .timer-settings *::before, .timer-settings *::after { box-sizing: border-box; }
+.timer-settings header { padding: 20px 22px 12px; border-bottom: 1px solid rgba(127,127,127,.2); }
+.timer-settings h1 { font-size: 20px; font-weight: 650; margin: 0 0 4px; }
+.timer-settings p { margin: 6px 0 14px; }
+.timer-settings header p, .timer-settings__hint { opacity: .7; font-size: 12px; }
+.timer-settings__body { height: 400px; max-height: 60vh; overflow-y: auto; padding: 18px 22px; }
+.timer-settings fieldset { border: 0; margin: 0 0 24px; padding: 0; min-width: 0; }
+.timer-settings legend { font-size: 15px; font-weight: 650; margin-bottom: 8px; }
+.timer-settings__position { display: grid; grid-template-columns: 72px minmax(0,1fr) 30px; gap: 8px; align-items: center; margin: 8px 0; }
+.timer-settings select, .timer-settings input[type=number] { width: 100%; border: 1px solid rgba(127,127,127,.4); border-radius: 6px; padding: 7px; color: inherit; background: var(--rn-clr-background-primary, #fff); font: inherit; }
+.timer-settings button { border: 1px solid rgba(127,127,127,.35); border-radius: 6px; padding: 6px 10px; color: inherit; background: var(--rn-clr-background-secondary, #f5f6f8); font: inherit; cursor: pointer; }
+.timer-settings button:disabled { opacity: .45; cursor: default; }
+.timer-settings :focus-visible { outline: 2px solid #2684ff; outline-offset: 2px; }
+.timer-settings__actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+.timer-settings__toggle { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+.timer-settings__toggle input { width: 16px; height: 16px; accent-color: #2684ff; }
+.timer-settings__duration { display: grid; grid-template-columns: 1fr 96px; align-items: center; gap: 12px; margin-bottom: 12px; }
+.timer-settings footer { display: flex; justify-content: flex-end; gap: 8px; padding: 14px 22px; border-top: 1px solid rgba(127,127,127,.2); }
+.timer-settings button.timer-settings__save { background: #1769ce; border-color: #1769ce; color: white; }
+.timer-settings__error { color: #c33; }
 
 .study-timer__item {
   display: inline-flex;

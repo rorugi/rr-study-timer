@@ -1,12 +1,16 @@
 import { getLocalDateKey, type TrackedEntityInfo } from './daily_stats';
+import { PomodoroTimer, type PomodoroSnapshot } from './pomodoro';
 
 export type CardContext = { id: string; entity: TrackedEntityInfo | null; lookback?: boolean };
 export type Credit = { id: string; date: string; ms: number; cards: number; entity: TrackedEntityInfo | null };
 export type TimerSnapshot = { sessionMs: number; cardMs: number; cards: number; averageMs: number;
-  recallMs: number | null; active: boolean; paused: boolean; entity: string; error?: string; updatedAt?: number; cardId?: string };
+  recallMs: number | null; active: boolean; paused: boolean; entity: string; error?: string; updatedAt?: number; cardId?: string;
+  entityId?: string; entityKind?: 'document' | 'folder'; pomodoro?: PomodoroSnapshot };
 
 /** One instance in the index runtime; widgets never own counters or write totals. */
 export class TimerEngine {
+  readonly pomodoro = new PomodoroTimer();
+  private lastEntity: TrackedEntityInfo | null = null;
   private card: CardContext | null = null;
   private lastTick = 0;
   private lastActivity = 0;
@@ -43,6 +47,7 @@ export class TimerEngine {
         this.credit(this.lastTick, end);
         this.sessionMs += ms;
         this.cardMs += ms;
+        this.pomodoro.advance(ms);
       }
     }
     this.lastTick = now;
@@ -57,6 +62,7 @@ export class TimerEngine {
     this.exit(now);
     this.sessionMs = this.completedMs = this.cards = this.cardMs = 0;
     this.awaitingCompletion.clear();
+    this.lastEntity = null;
     this.recallMs = null; this.lastActivity = this.lastTick = now;
   }
   load(card: CardContext | null, now: number) {
@@ -75,6 +81,7 @@ export class TimerEngine {
       }
     }
     this.card = card?.lookback ? null : card;
+    this.lastEntity = this.card?.entity ?? null;
     this.cardMs = 0; this.recallMs = null;
     this.lastActivity = this.lastTick = now;
   }
@@ -107,6 +114,7 @@ export class TimerEngine {
     return { sessionMs: this.sessionMs, cardMs: this.cardMs, cards: this.cards,
       averageMs: this.cards ? this.completedMs / this.cards : 0, recallMs: this.recallMs,
       active: !!this.card, paused: this.hidden || now >= this.lastActivity + this.idleMs,
-      entity: this.card?.entity?.title ?? '', cardId: this.card?.id, updatedAt: now };
+      entity: this.lastEntity?.title ?? '', entityId: this.lastEntity?.id, entityKind: this.lastEntity?.kind,
+      pomodoro: this.pomodoro.snapshot(), cardId: this.card?.id, updatedAt: now };
   }
 }
