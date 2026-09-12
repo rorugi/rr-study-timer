@@ -25,6 +25,7 @@ test('upgrading replaces the floating widget; review menu and slash command open
   const plugin = {
     settings: { registerNumberSetting: async () => {} },
     app: {
+      registerCSS: async (id, css) => { assert.equal(id, 'rr-study-timer-statistics-layout'); assert.match(css, /grid-column: 1 \/ -1/); },
       unregisterWidget: async (file, location) => { registrationEvents.push(['remove', file, location]); widgets.delete(`${file}:${location}`); },
       registerWidget: async (file, location, options) => { registrationEvents.push(['add', file, location]); widgets.set(`${file}:${location}`, options); },
       registerMenuItem: async item => menus.set(item.id, item),
@@ -37,9 +38,9 @@ test('upgrading replaces the floating widget; review menu and slash command open
     window: { openWidgetInPane: async () => {} },
   };
   await activate(plugin);
-  assert.equal(widgets.has('daily_statistics:LearningProgressPage'), false);
+  assert.equal(widgets.has('daily_statistics:LearningProgressPage'), true);
   for (const card of ['weekly_statistics', 'today_statistics', 'pomodoro_statistics']) {
-    assert.ok(widgets.has(`${card}:LearningProgressPage`));
+    assert.equal(widgets.has(`${card}:LearningProgressPage`), false);
   }
   assert.ok(widgets.has('daily_statistics:Pane'));
   assert.deepEqual(widgets.get('pomodoro_complete:Popup'), { dimensions: { height: 'auto', width: 420 } });

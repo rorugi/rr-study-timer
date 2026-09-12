@@ -6,7 +6,12 @@ See how long you have studied, how many card reviews you have completed, and whi
 
 Author: Roland Russwurm · Plugin ID: `rr-study-timer`
 
-## What's new in 0.6.4
+## What's new in 0.6.5
+
+- Fixed the RemNote statistics page's outer plugin container, which kept all plugin cards in the left column. RR Study Timer now spans the available row and arranges its boxes in a responsive grid.
+- Replaces the separate card registrations introduced in 0.6.4. Confetti and Pomodoro history remain included.
+
+## Changes in 0.6.4 (layout superseded by 0.6.5)
 
 - Weekly study time, today's statistics, and Pomodoro history are separate flashcard statistics cards, allowing RemNote to place them beside each other. The overview pane also adapts to the available width.
 - Finishing a Pomodoro now launches a colorful confetti burst around the tomato in the completion popup. Click the tomato to close it as before.
