@@ -1,22 +1,22 @@
 # RR Study Timer
 
-Version 0.5.8 · Roland Russwurm · Plugin-ID `rr-study-timer`
+Version 0.5.8 · Roland Russwurm · Plugin ID `rr-study-timer`
 
-Aktive Lernzeit, tägliche Kartenanzahl, Tageszeit nach Dokument/Ordner und Wochenübersicht Montag–Sonntag. Die Queue-Zeile zeigt nur Zeit, Karten und Durchschnitt. Mobile Unterstützung ist aktiviert.
+Track active study time, daily card counts, daily study time by document/folder, and a weekly overview from Monday to Sunday. The queue row shows only time, cards, and average time per card. Mobile support is enabled.
 
-## Übersicht öffnen
+## Open the overview
 
-Die beiden Boxen stehen wieder auf der Karteikarten-Statistikseite. Die Registrierung auf DeckPage in 0.5.7 zeigte sie in der Desktop-App nicht an. Eine direkte Einbettung auf der neuen Karteikarten-Startseite ist derzeit nicht bestätigt und wird in dieser Version nicht versprochen.
+The two panels are back on the flashcard statistics page. Registering them on `DeckPage` in 0.5.7 did not display them in the desktop app. Direct embedding on the new flashcard home page is currently unconfirmed and is not promised in this version.
 
-Zusätzlich in RemNotes Befehlssuche `Lernzeit anzeigen` ausführen: Die Übersicht öffnet sich in einer eigenen Ansicht. Bei mindestens 654 px verfügbarer Breite stehen Wochen- und Tagesbox nebeneinander, in schmalen Ansichten untereinander. Die Breite des Bereichs, den RemNote einem Plugin auf der Statistikseite zuweist, bestimmt die tatsächliche Anordnung.
+You can also run `Lernzeit anzeigen` (Show study time) from RemNote's command search to open the overview in a separate pane. When at least 654 px of width is available, the weekly and daily panels appear side by side; in narrower views, they are stacked vertically. The width RemNote allocates to the plugin on the statistics page determines the actual layout.
 
 ## Update
 
-Die gebaute PluginZip-v0.5.8.zip über den Plugin-Entwicklerbereich als Update laden. Die vorhandene Installation nicht deinstallieren und ihre Daten nicht löschen. Danach RemNote vollständig neu laden und Version 0.5.8 prüfen.
+Upload the built `PluginZip-v0.5.8.zip` as an update through the plugin developer section. Do not uninstall the existing installation or delete its data. Then fully reload RemNote and check that version 0.5.8 is running.
 
-Für localhost: vorherigen Server stoppen, das Source-ZIP neu entpacken, im Ordner rr-study-timer `npm ci` und `npm run dev` ausführen. Die vorhandene Verbindung zu http://localhost:8080 weiterverwenden und RemNote vollständig neu laden.
+For localhost development: stop the previous server, extract the source ZIP again, and run `npm ci` followed by `npm run dev` in the `rr-study-timer` folder. Keep using the existing connection to http://localhost:8080 and fully reload RemNote.
 
-Zum Bauen aus einem frischen Source-ZIP:
+To build from a freshly extracted source ZIP:
 
 ```sh
 git init
@@ -25,16 +25,16 @@ npm test
 npm run build
 ```
 
-Der offizielle RemNote-Validator benötigt ein Git-Repository. Der Build erzeugt eine frische PluginZip.zip und prüft vorher die TypeScript-Typen und das Manifest.
+The official RemNote validator requires a Git repository. The build checks the TypeScript types and manifest, then creates a fresh `PluginZip.zip`.
 
-## Verhalten und Daten
+## Behavior and data
 
-Die in 0.5.6 live bestätigte Zeitmessung und Zuordnung verspäteter Abschlussereignisse über die Karten-ID bleiben unverändert. Nach standardmäßig 30 Sekunden ohne Kartenladen, Antwortzeigen oder Bewerten pausiert die Zeit. Die Einstellung Pause after inactivity (seconds) wirkt nach Plugin-Neustart; Minimum fünf Sekunden. Sichtbarkeit wird vom Queue-Widget gemeldet.
+Time tracking and the assignment of delayed completion events by card ID remain unchanged from the behavior verified live in 0.5.6. By default, tracking pauses after 30 seconds without loading a card, showing an answer, or grading a card. The `Pause after inactivity (seconds)` setting takes effect after restarting the plugin; the minimum is five seconds. Visibility is reported by the queue widget.
 
-Dokument-/Ordner-IDs bleiben die dauerhaften Schlüssel; Umbenennungen ändern nicht die historischen Werte. Die vorhandenen Tageswerte werden weitergelesen. Wiederholte Bewertungen derselben Karte zählen erneut. Nie aufgezeichnete Zeiten lassen sich nicht rückwirkend rekonstruieren.
+Document/folder IDs remain the permanent keys, so renaming a document or folder does not change its historical values. Existing daily values continue to be read. Repeated reviews of the same card count again. Time that was never recorded cannot be reconstructed retroactively.
 
-Speicherungen erfolgen regelmäßig und bei Kartenwechsel/Abschluss. Ein abruptes Schließen kann den letzten noch nicht gespeicherten Abschnitt verlieren. Paralleles Lernen in mehreren Instanzen hat weiterhin keine atomare Zusammenführung synchronisierter Tageswerte.
+Data is saved periodically and when cards change or are completed. Closing the app abruptly may lose the most recent unsaved interval. Studying in multiple instances at the same time still does not support atomic merging of synchronized daily values.
 
-## Änderungen in 0.5.8
+## Changes in 0.5.8
 
-Die Übersicht ist wieder auf LearningProgressPage registriert, dem in der Desktop-App bereits funktionierenden Platz. Zusätzlich ist sie als Pane über Lernzeit anzeigen aufrufbar. DeckPage wird nicht mehr verwendet. Responsive Anordnung, reduzierte Queue-Zeile und Entfernung der Diagnosefunktion aus 0.5.7 bleiben erhalten. Historische DEBUG-Dateien dokumentieren frühere Versionen und sind keine aktuelle Bedienungsanleitung.
+The overview is once again registered on `LearningProgressPage`, where it already worked in the desktop app. It can also be opened as a pane using `Lernzeit anzeigen` (Show study time). `DeckPage` is no longer used. The responsive layout, simplified queue row, and removal of the diagnostic feature introduced in 0.5.7 are retained. Historical DEBUG files document earlier versions and are not current user instructions.
