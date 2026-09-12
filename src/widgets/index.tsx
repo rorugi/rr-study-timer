@@ -9,11 +9,18 @@ async function onActivate(plugin: ReactRNPlugin) {
   stopTracking = await startTracking(plugin);
   await plugin.app.registerWidget('study_timer', WidgetLocation.QueueBelowTopBar, {
     dimensions: { height: 'auto', width: '100%' } });
-  await plugin.app.registerWidget('settings', WidgetLocation.FloatingWidget, {
+  // Match RR Smart TTS: openPopup requires a Popup registration, not FloatingWidget.
+  await plugin.app.unregisterWidget('settings', WidgetLocation.FloatingWidget);
+  await plugin.app.unregisterWidget('settings', WidgetLocation.Popup);
+  await plugin.app.registerWidget('settings', WidgetLocation.Popup, {
     dimensions: { height: 'auto', width: 480 } });
+  const openSettings = async () => { await plugin.widget.openPopup('settings', {}); };
   await plugin.app.registerMenuItem({ id: 'rr-study-timer-settings', name: 'RR Study Timer',
     location: PluginCommandMenuLocation.QueueMenu,
-    action: async () => { await plugin.widget.openPopup('settings', undefined, false); } });
+    action: openSettings });
+  await plugin.app.registerCommand({ id: 'rrstudytimer', name: 'rrstudytimer',
+    quickCode: 'rrstudytimer', keywords: 'RR Study Timer settings pomodoro status bar',
+    description: 'Open RR Study Timer settings.', action: openSettings });
   // Verified in the user's desktop app. DeckPage did not render on Flashcard Home.
   await plugin.app.registerWidget('daily_statistics', WidgetLocation.LearningProgressPage, {
     dimensions: { height: 'auto', width: '100%' } });
