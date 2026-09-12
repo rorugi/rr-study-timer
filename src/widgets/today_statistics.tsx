@@ -1,4 +1,3 @@
 import { renderWidget } from '@remnote/plugin-sdk';
 import { DailyStatistics } from '../components/study_statistics';
-export { DailyStatistics };
-renderWidget(DailyStatistics);
+renderWidget(() => <DailyStatistics section="today" />);
