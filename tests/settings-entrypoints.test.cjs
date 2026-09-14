@@ -44,6 +44,8 @@ test('upgrading replaces the floating widget; review menu and slash command open
       }, isFloatingWidgetOpen: async id => id === 'timer-window' },
   };
   await activate(plugin);
+  assert.deepEqual(widgets.get('pomodoro_window:FloatingWidget').dimensions,{height:'auto',width:'auto'});
+  assert.ok(widgets.has('pomodoro_pane:Pane'));
   assert.equal(widgets.has('daily_statistics:LearningProgressPage'), true);
   for (const card of ['weekly_statistics', 'today_statistics', 'pomodoro_statistics']) {
     assert.equal(widgets.has(`${card}:LearningProgressPage`), false);

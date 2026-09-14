@@ -1,4 +1,3 @@
 import { renderWidget } from '@remnote/plugin-sdk';
 import { PomodoroWindow } from '../components/pomodoro_window';
-export { PomodoroWindow };
-renderWidget(PomodoroWindow);
+renderWidget(() => <PomodoroWindow docked />);
