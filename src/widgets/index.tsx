@@ -16,8 +16,13 @@ async function onActivate(plugin: ReactRNPlugin) {
       openingPomodoro = true;
       try {
         if (pomodoroWindowId && await plugin.window.isFloatingWidgetOpen(pomodoroWindowId)) return;
+        // classContainer names an existing host element, not a class to add.
+        // Omit it so RemNote positions the window relative to the viewport.
         pomodoroWindowId = await plugin.window.openFloatingWidget('pomodoro_window', { top: 80, right: 24 },
-          'rr-pomodoro-floating-window', false);
+          undefined, false);
+      } catch (error) {
+        console.error('RR Study Timer Pomodoro window', error);
+        await plugin.app.toast('Could not open RR Pomodoro. Please try again.');
       } finally { openingPomodoro = false; }
     } });
   await plugin.settings.registerNumberSetting({ id: 'idle-timeout-seconds',

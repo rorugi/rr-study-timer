@@ -38,6 +38,8 @@ test('upgrading replaces the floating widget; review menu and slash command open
     window: { openWidgetInPane: async () => {},
       openFloatingWidget: async (file, position, container, outside) => {
         assert.equal(file,'pomodoro_window'); assert.equal(outside,false);
+        assert.equal(container,undefined,'a nonexistent host container makes RemNote immediately close the window');
+        assert.deepEqual(position,{top:80,right:24});
         assert.ok(widgets.has(`${file}:FloatingWidget`)); opened.push({floating:file}); return 'timer-window';
       }, isFloatingWidgetOpen: async id => id === 'timer-window' },
   };
