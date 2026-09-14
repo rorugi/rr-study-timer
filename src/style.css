@@ -1,4 +1,11 @@
-.pomodoro-window { box-sizing: border-box; padding: 14px; width: 100%; font: 14px/1.4 system-ui, sans-serif; color: var(--rn-clr-content-primary, #252530); background: var(--rn-clr-background-primary, #fff); border: 1px solid var(--rn-clr-border-primary, #ddd); border-radius: 16px; }
+.pomodoro-window { box-sizing: border-box; padding: 14px; width: 320px; font: 14px/1.4 system-ui, sans-serif; color: var(--rn-clr-content-primary, #252530); background: var(--rn-clr-background-primary, #fff); border: 1px solid var(--rn-clr-border-primary, #ddd); border-radius: 16px; }
+.pomodoro-window--docked { width: 100%; max-width: 420px; margin: 0 auto; }
+.pomodoro-window--mini { width: 112px; padding: 6px 10px; border-radius: 12px; }
+.pomodoro-window__mini-clock { display: block; width: 100%; padding: 0; border: 0; color: inherit; background: transparent; cursor: pointer; font: 700 24px/1.35 system-ui, sans-serif; font-variant-numeric: tabular-nums; }
+.pomodoro-window__actions { display: flex; gap: 4px; }
+.pomodoro-window__placement { display: flex; gap: 8px; margin-top: 10px; }
+.pomodoro-window__placement select, .pomodoro-window__placement button { min-width: 0; padding: 4px 6px; border: 1px solid var(--rn-clr-border-primary, #ddd); border-radius: 6px; background: transparent; color: inherit; font: inherit; font-size: 12px; }
+.pomodoro-window__placement button { cursor: pointer; }
 .pomodoro-window header { display: flex; align-items: center; justify-content: space-between; }
 .pomodoro-window header button { border: 0; background: transparent; color: inherit; font-size: 24px; cursor: pointer; padding: 0 6px; }
 .pomodoro-window__dial { position: relative; width: 100%; aspect-ratio: 1; margin-top: 10px; }

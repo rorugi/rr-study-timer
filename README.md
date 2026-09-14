@@ -6,6 +6,12 @@ See how long you have studied, how many card reviews you have completed, and whi
 
 Author: Roland Russwurm · Plugin ID: `rr-study-timer`
 
+## What's new in 0.7.2
+
+- Move the floating Pomodoro to any of the four corners using the position selector.
+- Minimize it to a small clock; click the clock to restore the full controls. The shared countdown continues in either view.
+- Choose **Open in pane** to place the timer beside your page instead of covering it. This closes the floating view after opening the pane.
+
 ## What's new in 0.7.1
 
 - Fixed `/rrpomodoro` immediately closing without showing a window. The floating window now opens without requiring a nonexistent positioning container.
@@ -144,6 +150,10 @@ You can show document or group time beside the countdown to see how much study y
 ### Independent Pomodoro window
 
 Type `/rrpomodoro` in the editor or find **RR Pomodoro** in command search. This opens a non-modal floating window inside RemNote, with a tomato, remaining time, and circular progress indicator. The ring starts at 360 degrees and shrinks to zero. Opening the window preserves your current interval; running the command again does not open a duplicate window.
+
+Use the position selector for **Top right**, **Top left**, **Bottom right**, or **Bottom left**. The **−** button minimizes the floating window to a 112-pixel-wide clock; click it to restore the controls. Minimize does not pause the timer. Position and minimized state last for the current view and reset when it is closed and reopened.
+
+For a view that does not cover the page, choose **Open in pane**. RemNote places it in its pane layout, and the floating view closes. Use RemNote's pane controls to resize or close that pane. Minimizing within a pane simplifies the timer content but does not collapse the pane itself. The installed plugin API does not expose a separate operating-system window for this widget.
 
 - **Start / Resume** starts independent timing using the configured duration, enabling Pomodoro if necessary. An existing partial interval continues from its current time.
 - **Pause** pauses the shared Pomodoro in both views. Flashcard study statistics continue tracking active review normally.

@@ -8,7 +8,9 @@ async function onActivate(plugin: ReactRNPlugin) {
   let pomodoroWindowId: string | undefined;
   let openingPomodoro = false;
   await plugin.app.registerWidget('pomodoro_window', WidgetLocation.FloatingWidget, {
-    dimensions: { height: 'auto', width: 320 } });
+    dimensions: { height: 'auto', width: 'auto' } });
+  await plugin.app.registerWidget('pomodoro_pane', WidgetLocation.Pane, {
+    dimensions: { height: 'auto', width: '100%' }, widgetTabTitle: 'RR Pomodoro' });
   await plugin.app.registerCommand({ id: 'rrpomodoro', name: 'RR Pomodoro', quickCode: 'rrpomodoro',
     description: 'Open the shared Pomodoro countdown in a floating window.',
     action: async () => {
