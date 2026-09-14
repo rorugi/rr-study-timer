@@ -5,6 +5,21 @@ import '../style.css';
 import '../index.css';
 let stopTracking: (() => Promise<void>) | undefined;
 async function onActivate(plugin: ReactRNPlugin) {
+  let pomodoroWindowId: string | undefined;
+  let openingPomodoro = false;
+  await plugin.app.registerWidget('pomodoro_window', WidgetLocation.FloatingWidget, {
+    dimensions: { height: 'auto', width: 320 } });
+  await plugin.app.registerCommand({ id: 'rrpomodoro', name: 'RR Pomodoro', quickCode: 'rrpomodoro',
+    description: 'Open the shared Pomodoro countdown in a floating window.',
+    action: async () => {
+      if (openingPomodoro) return;
+      openingPomodoro = true;
+      try {
+        if (pomodoroWindowId && await plugin.window.isFloatingWidgetOpen(pomodoroWindowId)) return;
+        pomodoroWindowId = await plugin.window.openFloatingWidget('pomodoro_window', { top: 80, right: 24 },
+          'rr-pomodoro-floating-window', false);
+      } finally { openingPomodoro = false; }
+    } });
   await plugin.settings.registerNumberSetting({ id: 'idle-timeout-seconds',
     title: 'Pause after inactivity (seconds)', defaultValue: 30 });
   await plugin.app.registerWidget('pomodoro_complete', WidgetLocation.Popup, {

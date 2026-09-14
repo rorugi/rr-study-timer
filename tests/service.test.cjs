@@ -11,6 +11,38 @@ Module._load=originalLoad;
 const {getDailyStudyStats,getLocalDateKey}=require('../src/daily_stats');
 const {SETTINGS_KEY,POMODORO_RESTART_KEY,defaultSettings}=require('../src/settings');
 const {getDailyPomodoros}=require('../src/pomodoro_history');
+const {POMODORO_CONTROL_KEY}=require('../src/settings');
+
+test('window controls reach the shared service outside flashcards and completion is saved once',async()=>{
+  const realNow=Date.now;let now=new Date(2026,8,14,12).getTime();Date.now=()=>now;
+  const data=new Map(),session=new Map(),notifications=[],popups=[];
+  let config={...defaultSettings(),pomodoroEnabled:false,pomodoroMinutes:1};
+  const plugin={settings:{getSetting:async()=>30},app:{toast:async value=>notifications.push(value)},
+    widget:{openPopup:async value=>popups.push(value)},event:{addListener:()=>{},removeListener:()=>{}},
+    queue:{getCurrentCard:async()=>undefined,inLookbackMode:async()=>false},
+    storage:{getSynced:async key=>key===SETTINGS_KEY?config:data.get(key),setSynced:async(key,value)=>data.set(key,value),
+      getSession:async key=>session.get(key),setSession:async(key,value)=>session.set(key,value)}};
+  const settle=()=>new Promise(resolve=>setTimeout(resolve,50));let stop;
+  const command=action=>session.set(POMODORO_CONTROL_KEY,{id:`${action}-${now}`,action,at:now});
+  try {
+    stop=await startTracking(plugin,{rpcTimeoutMs:30,pollIntervalMs:5});await settle();
+    command('start');await settle();
+    assert.equal(session.get(TIMER_STATE_KEY).pomodoroControlId,undefined,'start waits for the enabling settings write');
+    config={...config,pomodoroEnabled:true};await settle();now+=10000;await settle();
+    assert.equal(session.get(TIMER_STATE_KEY).pomodoro.remainingMs,50000);
+    assert.equal(session.get(TIMER_STATE_KEY).pomodoroMode,'running');
+    assert.equal(session.get(TIMER_STATE_KEY).sessionMs,0);
+    command('pause');await settle();now+=20000;await settle();
+    assert.equal(session.get(TIMER_STATE_KEY).pomodoro.remainingMs,50000);
+    command('start');await settle();now+=50000;await settle();
+    assert.equal(session.get(TIMER_STATE_KEY).pomodoro.remainingMs,0);
+    assert.equal(notifications.length,1);assert.equal(popups.length,1);
+    now+=5000;await settle();assert.equal(popups.length,1);
+    command('start');await settle();assert.equal(session.get(TIMER_STATE_KEY).pomodoro.remainingMs,60000);
+    await stop();stop=null;
+    assert.equal((await getDailyPomodoros(plugin,getLocalDateKey(new Date(now)))).length,1);
+  }finally{if(stop)await stop();Date.now=realNow;}
+});
 
 test('live settings reach the status row and completion produces one service notification',async()=>{
   const realNow=Date.now;let now=new Date(2026,8,12,12).getTime();Date.now=()=>now;

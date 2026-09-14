@@ -1,5 +1,8 @@
 export const SETTINGS_KEY = 'rr-study-timer:settings:v1';
 export const POMODORO_RESTART_KEY = 'rr-study-timer:pomodoro-restart:v1';
+export const POMODORO_CONTROL_KEY = 'rr-study-timer:pomodoro-control:v1';
+export type PomodoroMode = 'flashcards' | 'running' | 'paused';
+export type PomodoroControl = { id: string; action: 'start' | 'pause' | 'flashcards'; at: number };
 export const METRICS = [
   ['session', 'Session time'],
   ['cards', 'Number of cards'],

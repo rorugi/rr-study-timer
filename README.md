@@ -6,6 +6,12 @@ See how long you have studied, how many card reviews you have completed, and whi
 
 Author: Roland Russwurm · Plugin ID: `rr-study-timer`
 
+## What's new in 0.7.0
+
+- Added `/rrpomodoro`: a floating Pomodoro window that stays open while you work elsewhere in RemNote or review flashcards.
+- The tomato and remaining time sit inside a blue circular countdown, shrinking from a full circle to zero.
+- Start/resume and pause independent timing, or return to flashcard-activity timing. Both views use one shared countdown, and completed intervals appear in the existing Pomodoro history.
+
 ## What's new in 0.6.5
 
 - Fixed the RemNote statistics page's outer plugin container, which kept all plugin cards in the left column. RR Study Timer now spans the available row and arranges its boxes in a responsive grid.
@@ -120,7 +126,7 @@ Group time uses the current folder hierarchy, including existing daily records. 
 
 ## Pomodoro Timer
 
-In **… → RR Study Timer**, enable **Pomodoro Timer** and enter a duration in minutes (default **25**, allowed range **1–1,440**). Save to start a fresh countdown. Only active review time counts: inactivity, hidden review surfaces, lookback, and time outside the review queue do not consume the interval.
+In **… → RR Study Timer**, enable **Pomodoro Timer** and enter a duration in minutes (default **25**, allowed range **1–1,440**). In flashcard-activity mode, only active review time counts: inactivity, hidden review surfaces, lookback, and time outside the review queue do not consume the interval. The independent window below also lets you time work outside flashcards.
 
 - Add **Pomodoro time** to any status-bar position to show the countdown.
 - A blue line spans the top of the status bar at the start and shrinks toward zero.
@@ -129,7 +135,19 @@ In **… → RR Study Timer**, enable **Pomodoro Timer** and enter a duration in
 - Changing only the status-bar layout preserves the current countdown. Leaving and re-entering review also preserves it while the plugin remains running.
 - Reloading RemNote or restarting the plugin starts a fresh interval. The enabled state, duration, and status-bar layout are saved; a partially completed countdown is not synchronized between devices.
 
-You can show document or group time beside the countdown to see how much study you have accumulated in that area. The countdown measures active review time across cards; switching documents does not start a separate Pomodoro. Automatic break intervals and automatic repeats are not included. Users who prefer reduced motion receive a steady, emphasized completion indicator instead of blinking.
+You can show document or group time beside the countdown to see how much study you have accumulated in that area. Switching documents does not start a separate Pomodoro. Automatic break intervals and automatic repeats are not included. Users who prefer reduced motion receive a steady, emphasized completion indicator instead of blinking.
+
+### Independent Pomodoro window
+
+Type `/rrpomodoro` in the editor or find **RR Pomodoro** in command search. This opens a non-modal floating window inside RemNote, with a tomato, remaining time, and circular progress indicator. The ring starts at 360 degrees and shrinks to zero. Opening the window preserves your current interval; running the command again does not open a duplicate window.
+
+- **Start / Resume** starts independent timing using the configured duration, enabling Pomodoro if necessary. An existing partial interval continues from its current time.
+- **Pause** pauses the shared Pomodoro in both views. Flashcard study statistics continue tracking active review normally.
+- **Use flashcard activity** returns to the original behavior, where active flashcard study advances the countdown and inactivity pauses it.
+- Independent timing continues until paused, including outside flashcards and after closing the floating window. It counts elapsed time, so pause it during breaks. It does not add non-flashcard time to your flashcard study totals.
+- At zero, the existing notification, tomato/confetti popup, and saved completion history apply. Click the blinking time or **Start next Pomodoro** to begin another interval.
+
+The window and flashcard status bar share a single timer within the current plugin runtime; simultaneous use never counts a second twice. Reloading RemNote restarts the interval and returns to flashcard-activity mode. Independent time is included in the recorded Pomodoro duration; manually paused time is excluded.
 
 ## Flashcard review row
 
