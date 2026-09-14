@@ -3,6 +3,9 @@
 .pomodoro-window--mini { width: 112px; padding: 6px 10px; border-radius: 12px; }
 .pomodoro-window__mini-clock { display: block; width: 100%; padding: 0; border: 0; color: inherit; background: transparent; cursor: pointer; font: 700 24px/1.35 system-ui, sans-serif; font-variant-numeric: tabular-nums; }
 .pomodoro-window__actions { display: flex; gap: 4px; }
+.pomodoro-window__drag-handle { flex: 1; cursor: grab; touch-action: none; user-select: none; padding: 5px 0; }
+.pomodoro-window__mini-clock { touch-action: none; user-select: none; cursor: grab; }
+.pomodoro-window__drag-handle:active, .pomodoro-window__mini-clock:active { cursor: grabbing; }
 .pomodoro-window__placement { display: flex; gap: 8px; margin-top: 10px; }
 .pomodoro-window__placement select, .pomodoro-window__placement button { min-width: 0; padding: 4px 6px; border: 1px solid var(--rn-clr-border-primary, #ddd); border-radius: 6px; background: transparent; color: inherit; font: inherit; font-size: 12px; }
 .pomodoro-window__placement button { cursor: pointer; }

@@ -6,7 +6,13 @@ See how long you have studied, how many card reviews you have completed, and whi
 
 Author: Roland Russwurm · Plugin ID: `rr-study-timer`
 
-## What's new in 0.7.2
+## What's new in 0.7.3
+
+- Drag the title bar to move the floating Pomodoro freely. The minimized clock can also be dragged; clicking without dragging restores it.
+- Removed corner presets and the Open in pane action after reports of RemNote window-string parsing errors.
+- Running /rrpomodoro again brings an existing floating timer back to its initial visible position without resetting the countdown.
+
+## Changes in 0.7.2 (positioning superseded by 0.7.3)
 
 - Move the floating Pomodoro to any of the four corners using the position selector.
 - Minimize it to a small clock; click the clock to restore the full controls. The shared countdown continues in either view.
@@ -151,9 +157,9 @@ You can show document or group time beside the countdown to see how much study y
 
 Type `/rrpomodoro` in the editor or find **RR Pomodoro** in command search. This opens a non-modal floating window inside RemNote, with a tomato, remaining time, and circular progress indicator. The ring starts at 360 degrees and shrinks to zero. Opening the window preserves your current interval; running the command again does not open a duplicate window.
 
-Use the position selector for **Top right**, **Top left**, **Bottom right**, or **Bottom left**. The **−** button minimizes the floating window to a 112-pixel-wide clock; click it to restore the controls. Minimize does not pause the timer. Position and minimized state last for the current view and reset when it is closed and reopened.
+Drag **RR Pomodoro** in the title bar to move the floating timer. Use **−** to minimize it to a small clock. Drag that clock to move it, or click without dragging to restore the full controls. Neither action pauses or resets the shared timer. Re-running /rrpomodoro returns an existing floating timer to its initial visible position.
 
-For a view that does not cover the page, choose **Open in pane**. RemNote places it in its pane layout, and the floating view closes. Use RemNote's pane controls to resize or close that pane. Minimizing within a pane simplifies the timer content but does not collapse the pane itself. The installed plugin API does not expose a separate operating-system window for this widget.
+The pane-opening option was removed in 0.7.3 because RemNote reported window-string parsing errors for widget panes. If you already opened a Pomodoro pane in 0.7.2, close that pane using RemNote's pane close button, then use /rrpomodoro for the floating timer. The installed plugin API does not expose a separate operating-system window for this widget.
 
 - **Start / Resume** starts independent timing using the configured duration, enabling Pomodoro if necessary. An existing partial interval continues from its current time.
 - **Pause** pauses the shared Pomodoro in both views. Flashcard study statistics continue tracking active review normally.
