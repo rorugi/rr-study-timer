@@ -65,7 +65,8 @@ export function PomodoroWindow({ docked = false }: { docked?: boolean } = {}) {
   if (minimized) return <main className="pomodoro-window pomodoro-window--mini">
     <button type="button" className={`pomodoro-window__mini-clock${timer?.finished ? ' study-timer__finished' : ''}`}
       aria-label="Restore Pomodoro window" title="Drag to move; click to restore" {...dragHandlers} onClick={() => { if (!consumeDragClick()) setMinimized(false); }}>
-      {state ? time : '–:––'}
+      <img className="pomodoro-window__mini-icon" src={`${root}/pomodoro-tomato-comic.png`} alt="" draggable={false} />
+      <span>{state ? time : '–:––'}</span>
     </button>
   </main>;
   return <main className={`pomodoro-window${docked ? ' pomodoro-window--docked' : ''}`}>

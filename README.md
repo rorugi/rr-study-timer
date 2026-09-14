@@ -6,6 +6,11 @@ See how long you have studied, how many card reviews you have completed, and whi
 
 Author: Roland Russwurm · Plugin ID: `rr-study-timer`
 
+## What's new in 0.7.4
+
+- Added a small tomato icon to the left of the minimized countdown.
+- The minimized clock now fits its contents, with a transparent floating-frame background to avoid the extra background extending to the right.
+
 ## What's new in 0.7.3
 
 - Drag the title bar to move the floating Pomodoro freely. The minimized clock can also be dragged; clicking without dragging restores it.
