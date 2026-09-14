@@ -35,7 +35,11 @@ test('upgrading replaces the floating widget; review menu and slash command open
       assert.ok(widgets.has(`${file}:Popup`), 'openPopup must target a widget registered at Popup');
       opened.push({ file, context });
     } },
-    window: { openWidgetInPane: async () => {} },
+    window: { openWidgetInPane: async () => {},
+      openFloatingWidget: async (file, position, container, outside) => {
+        assert.equal(file,'pomodoro_window'); assert.equal(outside,false);
+        assert.ok(widgets.has(`${file}:FloatingWidget`)); opened.push({floating:file}); return 'timer-window';
+      }, isFloatingWidgetOpen: async id => id === 'timer-window' },
   };
   await activate(plugin);
   assert.equal(widgets.has('daily_statistics:LearningProgressPage'), true);
@@ -54,5 +58,8 @@ test('upgrading replaces the floating widget; review menu and slash command open
   assert.equal(command.name, 'RR Study Timer: Settings'); assert.equal(command.quickCode, 'rrstudytimer');
   await menu.action(); await command.action();
   assert.deepEqual(opened, [{ file: 'settings', context: {} }, { file: 'settings', context: {} }]);
+  const pomodoroCommand=commands.get('rrpomodoro'); assert.equal(pomodoroCommand.quickCode,'rrpomodoro');
+  await pomodoroCommand.action(); await pomodoroCommand.action();
+  assert.equal(opened.filter(item=>item.floating==='pomodoro_window').length,1);
   await deactivate(plugin); assert.equal(stops, 1);
 });

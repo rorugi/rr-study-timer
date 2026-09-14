@@ -2,12 +2,12 @@ import { QueueEvent, type RNPlugin } from '@remnote/plugin-sdk';
 import { addDailyStudyTime, resolveTrackedEntityFromRemId } from './daily_stats';
 import { TimerEngine } from './timer_engine';
 import { withDeadline } from './deadline';
-import { defaultSettings, normalizeSettings, SETTINGS_KEY, POMODORO_RESTART_KEY, type TimerSettings } from './settings';
+import { defaultSettings, normalizeSettings, SETTINGS_KEY, POMODORO_RESTART_KEY, POMODORO_CONTROL_KEY, type PomodoroControl, type PomodoroMode, type TimerSettings } from './settings';
 import type { TimerSnapshot } from './timer_engine';
 import { savePomodoro } from './pomodoro_history';
 
 export const TIMER_STATE_KEY = 'rr-study-timer:session:v2';
-export type StatusSnapshot = TimerSnapshot & { settings: TimerSettings };
+export type StatusSnapshot = TimerSnapshot & { settings: TimerSettings; pomodoroMode?: PomodoroMode; pomodoroControlId?: string };
 
 export async function startTracking(plugin: RNPlugin, options = { rpcTimeoutMs: 3000, pollIntervalMs: 1000 }) {
   const rpc = <T,>(value: Promise<T>) => withDeadline(value, options.rpcTimeoutMs);
@@ -26,6 +26,8 @@ export async function startTracking(plugin: RNPlugin, options = { rpcTimeoutMs: 
   let checkingSettings = false;
   let displaySettings = defaultSettings();
   let lastRestartRequest: string | undefined;
+  let lastControlRequest: string | undefined;
+  const serviceStartedAt = Date.now();
   const listeners: Array<[string, (data?: unknown) => void]> = [];
   // Bound storage RPCs inside the writer, so its own serialization can recover.
   const writer = { storage: {
@@ -35,7 +37,8 @@ export async function startTracking(plugin: RNPlugin, options = { rpcTimeoutMs: 
 
   const publish = () => {
     if (publishing) return publishing;
-    publishing = rpc(plugin.storage.setSession(TIMER_STATE_KEY, { ...engine.snapshot(Date.now()), settings: displaySettings, error }))
+    publishing = rpc(plugin.storage.setSession(TIMER_STATE_KEY, { ...engine.snapshot(Date.now()), settings: displaySettings,
+      pomodoroMode: engine.pomodoroMode, pomodoroControlId: lastControlRequest, error }))
       .catch(cause => console.error('RR Study Timer status', cause))
       .finally(() => { publishing = undefined; });
     return publishing;
@@ -172,16 +175,29 @@ export async function startTracking(plugin: RNPlugin, options = { rpcTimeoutMs: 
     if (checkingSettings || stopped) return;
     checkingSettings = true;
     void Promise.all([rpc(plugin.storage.getSynced(SETTINGS_KEY)),
-      rpc(plugin.storage.getSession<{ id?: string }>(POMODORO_RESTART_KEY))]).then(([value, restart]) => {
+      rpc(plugin.storage.getSession<{ id?: string }>(POMODORO_RESTART_KEY)),
+      rpc(plugin.storage.getSession<PomodoroControl>(POMODORO_CONTROL_KEY))]).then(([value, restart, control]) => {
       if (stopped) return;
       const settings = normalizeSettings(value);
       void enqueue(() => {
         engine.advance(Date.now());
         engine.pomodoro.configure(settings);
+        if (!settings.pomodoroEnabled) engine.setPomodoroMode('flashcards', Date.now());
         displaySettings = settings;
+        if (typeof control?.id === 'string' && control.id !== lastControlRequest &&
+          Number.isFinite(control.at) && control.at >= serviceStartedAt && control.at <= Date.now() &&
+          ['start', 'pause', 'flashcards'].includes(control.action) &&
+          (settings.pomodoroEnabled || control.action !== 'start')) {
+          lastControlRequest = control.id;
+          if (settings.pomodoroEnabled) {
+            engine.setPomodoroMode(control.action === 'start' ? 'running' : control.action === 'pause' ? 'paused' : 'flashcards', Date.now());
+            if (control.action === 'start') engine.pomodoro.restartCompleted();
+          }
+        }
         if (typeof restart?.id === 'string' && restart.id !== lastRestartRequest) {
           lastRestartRequest = restart.id;
           if (engine.pomodoro.restartCompleted()) {
+            if (engine.pomodoroMode === 'paused') engine.setPomodoroMode('running', Date.now());
             engine.visibility(false, Date.now());
             engine.activity(Date.now());
           }

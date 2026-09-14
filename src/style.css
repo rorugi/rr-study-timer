@@ -1,3 +1,23 @@
+.pomodoro-window { box-sizing: border-box; padding: 14px; width: 100%; font: 14px/1.4 system-ui, sans-serif; color: var(--rn-clr-content-primary, #252530); background: var(--rn-clr-background-primary, #fff); border: 1px solid var(--rn-clr-border-primary, #ddd); border-radius: 16px; }
+.pomodoro-window header { display: flex; align-items: center; justify-content: space-between; }
+.pomodoro-window header button { border: 0; background: transparent; color: inherit; font-size: 24px; cursor: pointer; padding: 0 6px; }
+.pomodoro-window__dial { position: relative; width: 100%; aspect-ratio: 1; margin-top: 10px; }
+.pomodoro-window__dial svg { display: block; width: 100%; height: 100%; }
+.pomodoro-window__track, .pomodoro-window__ring { fill: none; stroke-width: 7px; }
+.pomodoro-window__track { stroke: var(--rn-clr-border-primary, #e8e9ed); }
+.pomodoro-window__ring { stroke: #2684ff; transition: stroke-dasharray .5s linear; }
+.pomodoro-window__center { position: absolute; inset: 15%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; }
+.pomodoro-window__center img { width: 72%; height: 72%; object-fit: contain; }
+.pomodoro-window__center button { font: 700 32px/1.2 system-ui, sans-serif; font-variant-numeric: tabular-nums; border: 0; background: transparent; color: inherit; cursor: pointer; padding: 0; }
+.pomodoro-window__center button:disabled { cursor: default; opacity: 1; }
+.pomodoro-window__status { text-align: center; margin: 6px 0 12px; }
+.pomodoro-window__primary { width: 100%; padding: 9px; border: 0; border-radius: 8px; color: white; background: #176bd1; font: inherit; cursor: pointer; }
+.pomodoro-window__primary:disabled { opacity: .6; cursor: default; }
+.pomodoro-window__link { display: block; margin: 10px auto; border: 0; background: transparent; color: inherit; text-decoration: underline; cursor: pointer; }
+.pomodoro-window__hint { font-size: 11px; opacity: .65; margin: 12px 0 0; }
+.pomodoro-window button:focus-visible { outline: 2px solid #2684ff; outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { .pomodoro-window__ring { transition: none; } }
+
 .study-timer {
   position: relative;
   overflow: hidden;

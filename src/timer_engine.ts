@@ -1,5 +1,6 @@
 import { getLocalDateKey, type TrackedEntityInfo } from './daily_stats';
 import { PomodoroTimer, type PomodoroSnapshot } from './pomodoro';
+import type { PomodoroMode } from './settings';
 
 export type CardContext = { id: string; entity: TrackedEntityInfo | null; lookback?: boolean };
 export type Credit = { id: string; date: string; ms: number; cards: number; entity: TrackedEntityInfo | null };
@@ -10,6 +11,11 @@ export type TimerSnapshot = { sessionMs: number; cardMs: number; cards: number; 
 /** One instance in the index runtime; widgets never own counters or write totals. */
 export class TimerEngine {
   readonly pomodoro = new PomodoroTimer();
+  pomodoroMode: PomodoroMode = 'flashcards';
+  setPomodoroMode(mode: PomodoroMode, now: number) {
+    this.advance(now);
+    this.pomodoroMode = mode;
+  }
   private lastEntity: TrackedEntityInfo | null = null;
   private card: CardContext | null = null;
   private lastTick = 0;
@@ -40,6 +46,8 @@ export class TimerEngine {
   }
   advance(now: number) {
     if (now <= this.lastTick) return;
+    // One clock owns both views: independent time replaces card-driven time.
+    if (this.pomodoroMode === 'running') this.pomodoro.advance(now - this.lastTick, now);
     if (this.card && !this.hidden) {
       const end = Math.min(now, this.lastActivity + this.idleMs);
       const ms = Math.max(0, end - this.lastTick);
@@ -47,7 +55,7 @@ export class TimerEngine {
         this.credit(this.lastTick, end);
         this.sessionMs += ms;
         this.cardMs += ms;
-        this.pomodoro.advance(ms, end);
+        if (this.pomodoroMode === 'flashcards') this.pomodoro.advance(ms, end);
       }
     }
     this.lastTick = now;
