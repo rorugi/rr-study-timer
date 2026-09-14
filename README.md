@@ -6,94 +6,23 @@ See how long you have studied, how many card reviews you have completed, and whi
 
 Author: Roland Russwurm · Plugin ID: `rr-study-timer`
 
-## What's new in 0.7.3
+## Changelog
 
-- Drag the title bar to move the floating Pomodoro freely. The minimized clock can also be dragged; clicking without dragging restores it.
-- Removed corner presets and the Open in pane action after reports of RemNote window-string parsing errors.
-- Running /rrpomodoro again brings an existing floating timer back to its initial visible position without resetting the countdown.
-
-## Changes in 0.7.2 (positioning superseded by 0.7.3)
-
-- Move the floating Pomodoro to any of the four corners using the position selector.
-- Minimize it to a small clock; click the clock to restore the full controls. The shared countdown continues in either view.
-- Choose **Open in pane** to place the timer beside your page instead of covering it. This closes the floating view after opening the pane.
-
-## What's new in 0.7.1
-
-- Fixed `/rrpomodoro` immediately closing without showing a window. The floating window now opens without requiring a nonexistent positioning container.
-
-## What's new in 0.7.0
-
-- Added `/rrpomodoro`: a floating Pomodoro window that stays open while you work elsewhere in RemNote or review flashcards.
-- The tomato and remaining time sit inside a blue circular countdown, shrinking from a full circle to zero.
-- Start/resume and pause independent timing, or return to flashcard-activity timing. Both views use one shared countdown, and completed intervals appear in the existing Pomodoro history.
-
-## What's new in 0.6.5
-
-- Fixed the RemNote statistics page's outer plugin container, which kept all plugin cards in the left column. RR Study Timer now spans the available row and arranges its boxes in a responsive grid.
-- Replaces the separate card registrations introduced in 0.6.4. Confetti and Pomodoro history remain included.
-
-## Changes in 0.6.4 (layout superseded by 0.6.5)
-
-- Weekly study time, today's statistics, and Pomodoro history are separate flashcard statistics cards, allowing RemNote to place them beside each other. The overview pane also adapts to the available width.
-- Finishing a Pomodoro now launches a colorful confetti burst around the tomato in the completion popup. Click the tomato to close it as before.
-- Confetti plays once and is hidden when reduced motion is enabled.
-
-## What's new in 0.6.3
-
-- Removed the extra completion text from the status bar. The finished countdown blinks at 0:00; click it to start another full interval immediately.
-- Restarting from the countdown preserves your layout, configured duration, and study statistics. The tomato popup remains click-to-close.
-
-- Completed Pomodoros are saved with their start time, finish time, and active duration. The statistics page now has a Pomodoro box with one tomato per completion today; hover over a tomato for timing.
-
-## Added in 0.6.2
-
-- When a Pomodoro finishes, a centered tomato comic popup zooms into view. Click the image to close it.
-- The animation waits for the bundled image to load and respects reduced-motion preferences. The existing countdown and completion notification remain available.
-
-## Changed in 0.6.1
-
-- Fixed the review-menu settings action: it now uses the same registered popup window type as RR Smart TTS, and removes the old floating-widget registration during upgrades.
-- Added `/rrstudytimer` to open settings from the slash menu. You can also find **RR Study Timer: Settings** in command search.
-- The popup uses an intrinsic 400 px scrolling body with a separate footer, matching Smart TTS's sizing approach.
-
-## Added in 0.6.0
-
-- Open **RR Study Timer** from the flashcard review **…** menu to configure the status bar.
-- Choose any metric for each numbered position, add or remove positions, and repeat metrics if desired. The default remains session time, card count, and average time per card.
-- Added total time today, current document time today, parent-folder group time today, and Pomodoro time.
-- Added an optional active-study Pomodoro countdown, off by default and set to 25 minutes. A blue line at the top of the status bar shrinks as time runs out.
-- At zero, the countdown blinks and a RemNote notification announces completion. Restart from settings when ready for another interval.
-- Aligned the manifest, package, and lockfile versions at 0.6.0.
-
-## Changed in 0.5.9
-
-- Updated plugin logo and a clearer, user-facing description.
-- The plugin manifest now identifies the plugin as **0.5.9**.
-- The tracking behavior and overview placement from 0.5.8 remain unchanged.
-
-The 0.5.9 manifest update originally left package metadata at 0.5.8; 0.6.0 aligns these values.
-
-## Changed in 0.5.8
-
-- Restored the daily and weekly overview to RemNote's flashcard statistics page, where it had already worked in the desktop app.
-- Added `Lernzeit anzeigen` (Show study time) to RemNote's command search, opening the overview in a separate pane.
-- Removed the `DeckPage` registration used in 0.5.7, which did not display the overview in the desktop app.
-- Retained the responsive layout and simplified review row from 0.5.7.
-
-## Changed in 0.5.7
-
-- Added a responsive arrangement for the weekly and daily panels.
-- Reduced the review row to time, completed cards, and average time.
-- Removed the diagnostic feature.
-- Tried placing the overview on `DeckPage`; 0.5.8 replaced this placement after it did not appear in the desktop app.
-
-## Verified in 0.5.6
-
-- Active time tracking was confirmed in live use.
-- Delayed card-completion events were assigned using the card ID, including when RemNote loaded the next card before reporting completion of the previous one.
-
-The 0.5.6 and 0.5.7 notes summarize the history recorded in the 0.5.8 documentation; they are not complete release logs. Older DEBUG documents, if encountered in previous packages, describe earlier investigations rather than current usage.
+- **0.7.4:** Small tomato icon and a tighter background for the minimized clock.
+- **0.7.3:** Drag the Pomodoro freely; removed the pane-opening option that caused errors.
+- **0.7.2:** Minimize the Pomodoro to a compact clock.
+- **0.7.1:** Fixed the Pomodoro window not opening.
+- **0.7.0:** Added `/rrpomodoro`, a circular countdown, and independent Start/Pause controls.
+- **0.6.5:** Fixed statistics cards staying in the left column.
+- **0.6.4:** Added completion confetti.
+- **0.6.3:** Saved Pomodoro history, daily tomato icons, and click-to-restart.
+- **0.6.2:** Added the animated tomato completion popup.
+- **0.6.1:** Fixed settings access and added `/rrstudytimer`.
+- **0.6.0:** Added configurable status-bar metrics and an optional Pomodoro timer.
+- **0.5.9:** Updated the plugin logo and description.
+- **0.5.8:** Restored flashcard statistics and added the overview command.
+- **0.5.7:** Simplified the review row and improved the statistics layout.
+- **0.5.6:** Improved tracking of delayed card completions.
 
 ## Main features
 

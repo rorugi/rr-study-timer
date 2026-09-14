@@ -1,0 +1,13 @@
+/* Only imported by the floating widget. Its frame must shrink with its contents,
+   and its document background must not paint a rectangular tail beside the pill. */
+html, body {
+  margin: 0 !important;
+  padding: 0 !important;
+  min-width: 0 !important;
+  width: max-content !important;
+  background: transparent !important;
+}
+body > div {
+  min-width: 0 !important;
+  width: max-content !important;
+}
