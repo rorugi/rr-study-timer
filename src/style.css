@@ -24,6 +24,14 @@
 .pomodoro-window__status { text-align: center; margin: 6px 0 12px; }
 .pomodoro-window__primary { width: 100%; padding: 9px; border: 0; border-radius: 8px; color: white; background: #176bd1; font: inherit; cursor: pointer; }
 .pomodoro-window__primary:disabled { opacity: .6; cursor: default; }
+.pomodoro-window__controls { display: flex; align-items: center; gap: 8px; }
+.pomodoro-window__controls .pomodoro-window__primary { flex: 1; width: auto; display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-width: 0; }
+.pomodoro-window__primary svg { flex-shrink: 0; }
+.pomodoro-window__icon-button { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 34px; width: 34px; height: 38px; padding: 0; border: 1px solid var(--rn-clr-border-primary, #ddd); border-radius: 8px; background: transparent; color: inherit; cursor: pointer; }
+.pomodoro-window__description { font-size: 12px; margin-top: 12px; padding: 0 4px; }
+.pomodoro-window__description p { margin: 8px 0; }
+.timer-settings__pomodoro-title { display: inline-flex; align-items: center; gap: 6px; }
+.timer-settings__pomodoro-title img { display: block; object-fit: contain; }
 .pomodoro-window__link { display: block; margin: 10px auto; border: 0; background: transparent; color: inherit; text-decoration: underline; cursor: pointer; }
 .pomodoro-window__hint { font-size: 11px; opacity: .65; margin: 12px 0 0; }
 .pomodoro-window button:focus-visible { outline: 2px solid #2684ff; outline-offset: 3px; }
