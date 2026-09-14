@@ -6,6 +6,10 @@ See how long you have studied, how many card reviews you have completed, and whi
 
 Author: Roland Russwurm · Plugin ID: `rr-study-timer`
 
+## What's new in 0.7.1
+
+- Fixed `/rrpomodoro` immediately closing without showing a window. The floating window now opens without requiring a nonexistent positioning container.
+
 ## What's new in 0.7.0
 
 - Added `/rrpomodoro`: a floating Pomodoro window that stays open while you work elsewhere in RemNote or review flashcards.
