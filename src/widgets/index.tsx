@@ -17,7 +17,10 @@ async function onActivate(plugin: ReactRNPlugin) {
       if (openingPomodoro) return;
       openingPomodoro = true;
       try {
-        if (pomodoroWindowId && await plugin.window.isFloatingWidgetOpen(pomodoroWindowId)) return;
+        if (pomodoroWindowId && await plugin.window.isFloatingWidgetOpen(pomodoroWindowId)) {
+          await plugin.window.setFloatingWidgetPosition(pomodoroWindowId, { top: 80, right: 24 });
+          return;
+        }
         // classContainer names an existing host element, not a class to add.
         // Omit it so RemNote positions the window relative to the viewport.
         pomodoroWindowId = await plugin.window.openFloatingWidget('pomodoro_window', { top: 80, right: 24 },

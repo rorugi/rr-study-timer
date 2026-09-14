@@ -4,6 +4,7 @@ import { withDeadline } from '../deadline';
 import { normalizeSettings, SETTINGS_KEY, POMODORO_CONTROL_KEY, type PomodoroControl } from '../settings';
 import type { StatusSnapshot } from '../tracking_service';
 import '../style.css';
+import { useFloatingDrag } from './use_floating_drag';
 
 export function PomodoroWindow({ docked = false }: { docked?: boolean } = {}) {
   const plugin = usePlugin();
@@ -11,29 +12,7 @@ export function PomodoroWindow({ docked = false }: { docked?: boolean } = {}) {
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   const [minimized, setMinimized] = useState(false);
-  const [position, setPosition] = useState('top-right');
-  const [moving, setMoving] = useState(false);
-  const move = async (corner: string) => {
-    if (moving) return;
-    setMoving(true); setError('');
-    try {
-      const context = await withDeadline(plugin.widget.getWidgetContext<WidgetLocation.FloatingWidget>());
-      const next = { ...(corner.startsWith('top') ? { top: 80 } : { bottom: 24 }),
-        ...(corner.endsWith('left') ? { left: 24 } : { right: 24 }) };
-      await withDeadline(plugin.window.setFloatingWidgetPosition(context.floatingWidgetId, next));
-      setPosition(corner);
-    } catch { setError('Could not move the timer. Please try again.'); }
-    finally { setMoving(false); }
-  };
-  const dock = async () => {
-    if (moving) return;
-    setMoving(true); setError('');
-    try {
-      await withDeadline(plugin.window.openWidgetInPane('pomodoro_pane'));
-      await close();
-    } catch { setError('Could not open the timer in a pane. Please try again.'); }
-    finally { setMoving(false); }
-  };
+  const { consumeDragClick, ...dragHandlers } = useFloatingDrag(plugin, !docked, () => setError('Could not move the timer. Please try again.'));
   useEffect(() => {
     let closed = false, reading = false;
     const refresh = async () => {
@@ -85,22 +64,15 @@ export function PomodoroWindow({ docked = false }: { docked?: boolean } = {}) {
   const root = (plugin.rootURL ?? '.').replace(/\/$/, '');
   if (minimized) return <main className="pomodoro-window pomodoro-window--mini">
     <button type="button" className={`pomodoro-window__mini-clock${timer?.finished ? ' study-timer__finished' : ''}`}
-      aria-label="Restore Pomodoro window" title="Click to restore Pomodoro controls" onClick={() => setMinimized(false)}>
+      aria-label="Restore Pomodoro window" title="Drag to move; click to restore" {...dragHandlers} onClick={() => { if (!consumeDragClick()) setMinimized(false); }}>
       {state ? time : '–:––'}
     </button>
   </main>;
   return <main className={`pomodoro-window${docked ? ' pomodoro-window--docked' : ''}`}>
-    <header><strong>RR Pomodoro</strong><div className="pomodoro-window__actions">
+    <header><strong className="pomodoro-window__drag-handle" title={docked ? undefined : 'Drag to move'} {...dragHandlers}>RR Pomodoro</strong><div className="pomodoro-window__actions">
       <button type="button" aria-label="Minimize Pomodoro to clock" title="Minimize to clock" onClick={() => setMinimized(true)}>−</button>
       {!docked && <button type="button" aria-label="Close Pomodoro window" onClick={() => void close()}>×</button>}
     </div></header>
-    {!docked && <div className="pomodoro-window__placement">
-      <select aria-label="Pomodoro window position" value={position} disabled={moving} onChange={event => void move(event.target.value)}>
-        <option value="top-right">Top right</option><option value="top-left">Top left</option>
-        <option value="bottom-right">Bottom right</option><option value="bottom-left">Bottom left</option>
-      </select>
-      <button type="button" disabled={moving} onClick={() => void dock()}>Open in pane</button>
-    </div>}
     <div className="pomodoro-window__dial">
       <svg viewBox="0 0 300 300" role="progressbar" aria-label="Pomodoro time remaining"
         aria-valuemin={0} aria-valuemax={Math.round((timer?.durationMs ?? 1500000) / 1000)} aria-valuenow={seconds}>
