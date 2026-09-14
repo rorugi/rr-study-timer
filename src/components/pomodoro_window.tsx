@@ -12,6 +12,11 @@ export function PomodoroWindow({ docked = false }: { docked?: boolean } = {}) {
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   const [minimized, setMinimized] = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
+  const openSettings = async () => {
+    try { await withDeadline(plugin.widget.openPopup('settings', { section: 'pomodoro' })); }
+    catch { setError('Could not open settings. Please try again.'); }
+  };
   const { consumeDragClick, ...dragHandlers } = useFloatingDrag(plugin, !docked, () => setError('Could not move the timer. Please try again.'));
   useEffect(() => {
     let closed = false, reading = false;
@@ -89,11 +94,29 @@ export function PomodoroWindow({ docked = false }: { docked?: boolean } = {}) {
       </div>
     </div>
     <p className="pomodoro-window__status">{!state ? 'Connecting…' : !timer?.enabled ? 'Ready to start' : timer.finished ? 'Time for a break' : running ? 'Running independently' : state.pomodoroMode === 'paused' ? 'Paused' : 'Following flashcard activity'}</p>
-    <button type="button" className="pomodoro-window__primary" disabled={busy || !state}
-      onClick={() => void control(running ? 'pause' : 'start')}>{busy ? 'Updating…' : running ? 'Pause' : timer?.finished ? 'Start next Pomodoro' : 'Start / Resume'}</button>
-    {timer?.enabled && state?.pomodoroMode !== 'flashcards' && <button type="button" className="pomodoro-window__link"
-      disabled={busy} onClick={() => void control('flashcards')}>Use flashcard activity</button>}
-    <p className="pomodoro-window__hint">Independent timing continues until paused, even if you close this window. Flashcards show the same countdown.</p>
+    <div className="pomodoro-window__controls">
+      <button type="button" className="pomodoro-window__primary" disabled={busy || !state}
+        onClick={() => void control(running ? 'pause' : 'start')}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          {running ? <path d="M6 4h4v16H6zm8 0h4v16h-4z" /> : <path d="m7 3 15 9-15 9z" />}
+        </svg>{busy ? 'Updating…' : running ? 'Pause' : timer?.finished ? 'Start next Pomodoro' : 'Start / Resume'}
+      </button>
+      <button type="button" className="pomodoro-window__icon-button" aria-label="Pomodoro information" title="Pomodoro information"
+        aria-expanded={showInfo} aria-controls="pomodoro-description" onClick={() => setShowInfo(value => !value)}>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 11v6m0-10v1" /></svg>
+      </button>
+      <button type="button" className="pomodoro-window__icon-button" aria-label="Pomodoro settings" title="Pomodoro settings" onClick={() => void openSettings()}>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" aria-hidden="true">
+          <path d="m10 3-.5 2-2 .9-1.9-.6-2 3.4 1.5 1.5v2.4l-1.5 1.5 2 3.4 1.9-.6 2 .9.5 2h4l.5-2 2-.9 1.9.6 2-3.4-1.5-1.5v-2.4l1.5-1.5-2-3.4-1.9.6-2-.9-.5-2z" /><circle cx="12" cy="11.4" r="3" />
+        </svg>
+      </button>
+    </div>
+    {showInfo && <section id="pomodoro-description" className="pomodoro-window__description" aria-label="About Pomodoro timing">
+      <p>Independent timing continues until paused, even if you close this window. Flashcards show the same countdown.</p>
+      <p>Flashcard activity mode counts active review time and pauses during inactivity. Completed intervals appear in your Pomodoro history.</p>
+      {timer?.enabled && state?.pomodoroMode !== 'flashcards' && <button type="button" className="pomodoro-window__link"
+        disabled={busy} onClick={() => void control('flashcards')}>Use flashcard activity</button>}
+    </section>}
     {error && <p role="alert">{error}</p>}
   </main>;
 }

@@ -8,6 +8,8 @@ Author: Roland Russwurm · Plugin ID: `rr-study-timer`
 
 ## Changelog
 
+- **0.7.5:** Added Pomodoro settings and info buttons; simplified the user README.
+
 - **0.7.4:** Small tomato icon and a tighter background for the minimized clock.
 - **0.7.3:** Drag the Pomodoro freely; removed the pane-opening option that caused errors.
 - **0.7.2:** Minimize the Pomodoro to a compact clock.
@@ -90,6 +92,7 @@ Drag **RR Pomodoro** in the title bar to move the floating timer. Use **−** to
 
 The pane-opening option was removed in 0.7.3 because RemNote reported window-string parsing errors for widget panes. If you already opened a Pomodoro pane in 0.7.2, close that pane using RemNote's pane close button, then use /rrpomodoro for the floating timer. The installed plugin API does not expose a separate operating-system window for this widget.
 
+- **Settings (gear)** opens Study Timer settings at the Pomodoro section. **Info** opens the timing description; click it again to hide it.
 - **Start / Resume** starts independent timing using the configured duration, enabling Pomodoro if necessary. An existing partial interval continues from its current time.
 - **Pause** pauses the shared Pomodoro in both views. Flashcard study statistics continue tracking active review normally.
 - **Use flashcard activity** returns to the original behavior, where active flashcard study advances the countdown and inactivity pauses it.
@@ -198,7 +201,7 @@ The daily and weekly panels are registered on RemNote's **flashcard statistics p
 
 With at least **654 px** of available width, the two panels appear side by side. In narrower spaces, they stack vertically. RemNote determines the width allocated to the plugin, so a large app window does not necessarily mean the panels will be side by side.
 
-Direct placement on the newer flashcard home page is not confirmed. The earlier `DeckPage` placement is no longer used.
+Open the overview from the flashcard statistics page or the overview command.
 
 Mobile support is enabled, but placement and visibility behavior should be checked in the specific RemNote mobile client.
 
@@ -206,7 +209,7 @@ Mobile support is enabled, but placement and visibility behavior should be check
 
 Use a **built plugin ZIP** with RemNote's plugin developer installation/update controls. GitHub's **Download ZIP** provides source code and is not an installable plugin package.
 
-There are currently no published GitHub Releases in this repository. If you do not already have a built package, follow [Build from source](#build-from-source) below.
+For source builds, see the [developer guide](https://github.com/rorugi/rr-study-timer/blob/main/readme-dev.md).
 
 When updating:
 
@@ -215,9 +218,7 @@ When updating:
 3. Fully reload RemNote.
 4. Check the installed plugin version and confirm that your daily totals are still visible.
 
-Previous instructions referred to a versioned package named `PluginZip-v0.5.8.zip`. The repository's build command produces `PluginZip.zip`; the manifest inside the archive identifies the plugin version.
 
-For a localhost update, stop the previous server, update or re-extract the source, run `npm ci` and `npm run dev`, and keep using the existing `http://localhost:8080` connection. Fully reload RemNote afterward.
 
 ## Data and privacy
 
@@ -261,63 +262,7 @@ The average uses only time associated with completed reviews. Session time can a
 
 Only time recorded while the plugin was running is available. Unrecorded history cannot be recovered, and clearing plugin data or abruptly closing before a save can remove or lose values.
 
-## Development
-
-### Repository source versus installation ZIP
-
-The repository contains the editable source in `src/`, static metadata and assets in `public/`, tests, dependency files, and build configuration. The `public/` directory is part of the plugin source, not a separately deployed website.
-
-Building creates `dist/` and `PluginZip.zip`. The archive contains compiled plugin files, the manifest, assets, and this README. Extracting an installation ZIP does not recreate the source project.
-
-### Build from source
-
-You need Node.js, npm, and Git. The test command uses Node's built-in test runner, so use a Node.js version that supports `node --test`.
-
-Clone the repository and install dependencies:
-
-```bash
-git clone https://github.com/rorugi/rr-study-timer.git
-cd rr-study-timer
-npm ci
-```
-
-Start the development server:
-
-```bash
-npm run dev
-```
-
-Load this developer plugin URL in RemNote:
-
-```text
-http://localhost:8080
-```
-
-Check types and run the regression tests:
-
-```bash
-npm run check-types
-npm test
-```
-
-Build the installation package:
-
-```bash
-npm run build
-```
-
-The build checks TypeScript types, runs the official RemNote manifest validator, compiles the plugin, and creates a fresh `PluginZip.zip`. Tests are a separate command and are not run automatically by the build.
-
-**The validator requires a Git repository.** If you downloaded and extracted a source ZIP instead of cloning, run `git init` in the extracted project directory before building:
-
-```bash
-git init
-npm ci
-npm test
-npm run build
-```
-
-### Storage keys
+## Storage keys
 
 Persistent daily statistics:
 
@@ -347,18 +292,10 @@ Review-widget visibility:
 rr-study-timer:queue-visibility:v1
 ```
 
-### Verification
-
-The regression tests cover inactivity clipping and resumption, hidden review surfaces, queue exit, local midnight, card attribution, lookback exclusion, serialized storage writes, retry deduplication, stable document/folder identity, Monday-based weeks, duplicate card events, delayed completion events, and recovery from stalled SDK calls.
-
-Additional tests cover configurable positions, invalid settings, parent-folder totals, active-time Pomodoro pausing, completion notification deduplication, restart, and live layout changes without resetting the countdown.
-
-These tests use mocked RemNote APIs. Client-specific widget placement and actual review behavior still require checks in RemNote. The historical live confirmation recorded for 0.5.6 is separate from automated test coverage.
-
 ## Author
 
 Roland Russwurm
 
 ## License
 
-MIT, as declared in `package.json`.
+MIT
