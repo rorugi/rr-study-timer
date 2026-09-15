@@ -8,7 +8,7 @@ Author: Roland Russwurm · Plugin ID: `rr-study-timer`
 
 ## Changelog
 
-- **0.7.6:** Added a restart checkbox, Pomodoro overview settings button, and flashcard-menu screen toggle.
+- **0.7.6:** Added a restart checkbox, Pomodoro overview settings button, and flashcard and document menu screen toggles.
 
 - **0.7.5:** Added Pomodoro settings and info buttons; simplified the user README.
 
@@ -51,7 +51,7 @@ Author: Roland Russwurm · Plugin ID: `rr-study-timer`
 
 The current plugin interface uses German labels. This README explains them in English; use the exact German command above when searching.
 
-The Pomodoro overview in **Flashcards → Stats** has a gear button that opens settings directly at the Pomodoro section. During review, **… → RR Study Timer - Pomodoro Screen** shows or hides the shared timer window. Hiding the window does not pause the timer.
+The Pomodoro overview in **Flashcards → Stats** has a gear button that opens settings directly at the Pomodoro section. From a document’s **…** menu or during review, **… → RR Study Timer - Pomodoro Screen** shows or hides the shared timer window. Hiding the window does not pause the timer.
 
 ## Status bar settings
 

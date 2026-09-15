@@ -39,6 +39,9 @@ async function onActivate(plugin: ReactRNPlugin) {
   await plugin.app.registerMenuItem({ id: 'rr-study-timer-pomodoro-screen',
     name: 'RR Study Timer - Pomodoro Screen', location: PluginCommandMenuLocation.QueueMenu,
     action: () => openPomodoro(true) });
+  await plugin.app.registerMenuItem({ id: 'rr-study-timer-pomodoro-document-screen',
+    name: 'RR Study Timer - Pomodoro Screen', location: PluginCommandMenuLocation.DocumentMenu,
+    action: () => openPomodoro(true) });
   await plugin.settings.registerNumberSetting({ id: 'idle-timeout-seconds',
     title: 'Pause after inactivity (seconds)', defaultValue: 30 });
   await plugin.app.registerWidget('pomodoro_complete', WidgetLocation.Popup, {

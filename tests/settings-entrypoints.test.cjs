@@ -12,7 +12,7 @@ test('upgrading replaces the floating widget; review menu and slash command open
   require.extensions['.css'] = () => {};
   Module._load = function(id, ...args) {
     if (id === '@remnote/plugin-sdk') return { WidgetLocation: locations,
-      PluginCommandMenuLocation: { QueueMenu: 'QueueMenu' },
+      PluginCommandMenuLocation: { QueueMenu: 'QueueMenu', DocumentMenu: 'DocumentMenu' },
       declareIndexPlugin: (on, off) => { activate = on; deactivate = off; } };
     if (id === '../tracking_service') return { startTracking: async () => async () => { stops++; } };
     return originalLoad.call(this, id, ...args);
@@ -74,5 +74,12 @@ test('upgrading replaces the floating widget; review menu and slash command open
   assert.deepEqual(closedWindows, ['timer-window']);
   await screenMenu.action();
   assert.equal(opened.filter(item => item.floating === 'pomodoro_window').length, 2);
+  const documentMenu = menus.get('rr-study-timer-pomodoro-document-screen');
+  assert.equal(documentMenu.name, 'RR Study Timer - Pomodoro Screen');
+  assert.equal(documentMenu.location, 'DocumentMenu');
+  await documentMenu.action();
+  assert.equal(closedWindows.length, 2);
+  await documentMenu.action();
+  assert.equal(opened.filter(item => item.floating === 'pomodoro_window').length, 3);
   await deactivate(plugin); assert.equal(stops, 1);
 });
