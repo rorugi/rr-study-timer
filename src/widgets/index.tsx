@@ -11,14 +11,17 @@ async function onActivate(plugin: ReactRNPlugin) {
     dimensions: { height: 'auto', width: 'auto' } });
   await plugin.app.registerWidget('pomodoro_pane', WidgetLocation.Pane, {
     dimensions: { height: 'auto', width: '100%' }, widgetTabTitle: 'RR Pomodoro' });
-  await plugin.app.registerCommand({ id: 'rrpomodoro', name: 'RR Pomodoro', quickCode: 'rrpomodoro',
-    description: 'Open the shared Pomodoro countdown in a floating window.',
-    action: async () => {
+  const openPomodoro = async (toggle = false) => {
       if (openingPomodoro) return;
       openingPomodoro = true;
       try {
         if (pomodoroWindowId && await plugin.window.isFloatingWidgetOpen(pomodoroWindowId)) {
-          await plugin.window.setFloatingWidgetPosition(pomodoroWindowId, { top: 80, right: 24 });
+          if (toggle) {
+            await plugin.window.closeFloatingWidget(pomodoroWindowId);
+            pomodoroWindowId = undefined;
+          } else {
+            await plugin.window.setFloatingWidgetPosition(pomodoroWindowId, { top: 80, right: 24 });
+          }
           return;
         }
         // classContainer names an existing host element, not a class to add.
@@ -29,7 +32,16 @@ async function onActivate(plugin: ReactRNPlugin) {
         console.error('RR Study Timer Pomodoro window', error);
         await plugin.app.toast('Could not open RR Pomodoro. Please try again.');
       } finally { openingPomodoro = false; }
-    } });
+    };
+  await plugin.app.registerCommand({ id: 'rrpomodoro', name: 'RR Pomodoro', quickCode: 'rrpomodoro',
+    description: 'Open the shared Pomodoro countdown in a floating window.',
+    action: () => openPomodoro() });
+  await plugin.app.registerMenuItem({ id: 'rr-study-timer-pomodoro-screen',
+    name: 'RR Study Timer - Pomodoro', location: PluginCommandMenuLocation.QueueMenu,
+    action: () => openPomodoro(true) });
+  await plugin.app.registerMenuItem({ id: 'rr-study-timer-pomodoro-document-screen',
+    name: 'RR Study Timer - Pomodoro', location: PluginCommandMenuLocation.DocumentMenu,
+    action: () => openPomodoro(true) });
   await plugin.settings.registerNumberSetting({ id: 'idle-timeout-seconds',
     title: 'Pause after inactivity (seconds)', defaultValue: 30 });
   await plugin.app.registerWidget('pomodoro_complete', WidgetLocation.Popup, {

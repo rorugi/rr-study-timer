@@ -10,6 +10,7 @@ export function Settings() {
   const [minutes, setMinutes] = useState('25');
   const [loaded, setLoaded] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [restartOnSave, setRestartOnSave] = useState(false);
   const [error, setError] = useState('');
   const [loadAttempt, setLoadAttempt] = useState(0);
   const body = useRef<HTMLDivElement>(null);
@@ -39,7 +40,8 @@ export function Settings() {
     if (!loaded || saving || !validMinutes) return;
     setSaving(true); setError('');
     try {
-      await withDeadline(plugin.storage.setSynced(SETTINGS_KEY, { ...draft, pomodoroMinutes: Number(minutes) }));
+      await withDeadline(plugin.storage.setSynced(SETTINGS_KEY, { ...draft, pomodoroMinutes: Number(minutes),
+        restartToken: restartOnSave && draft.pomodoroEnabled ? `${Date.now()}-${Math.random()}` : draft.restartToken }));
       await plugin.widget.closePopup();
     } catch { setError('Could not finish saving. Your selections are still here; please try Save again.'); }
     finally { setSaving(false); }
@@ -79,8 +81,9 @@ export function Settings() {
         {!validMinutes && <p role="alert">Enter a duration from 1 to 1,440 minutes.</p>}
         <p>Flashcard activity mode pauses during inactivity and outside review. Independent timing runs until paused in the Pomodoro window. At zero, the time blinks and RemNote shows a notification.</p>
         <p className="timer-settings__hint">The blue line shows the remaining time. Select “Pomodoro time” in any position to see the countdown.</p>
-        <button disabled={!draft.pomodoroEnabled} onClick={() => setDraft(previous => ({ ...previous, restartToken: `${Date.now()}-${Math.random()}` }))}>Restart Pomodoro on Save</button>
-        {draft.restartToken && <p className="timer-settings__hint">Saving applies your duration and any requested restart. Layout changes alone keep the current countdown.</p>}
+        <label className="timer-settings__toggle"><input type="checkbox" checked={restartOnSave}
+          disabled={!draft.pomodoroEnabled} onChange={event => setRestartOnSave(event.target.checked)} />Restart Pomodoro on Save</label>
+        {restartOnSave && draft.pomodoroEnabled && <p className="timer-settings__hint">Saving applies your duration and any requested restart. Layout changes alone keep the current countdown.</p>}
       </fieldset>
     </div>
     <footer>

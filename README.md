@@ -8,6 +8,8 @@ Author: Roland Russwurm · Plugin ID: `rr-study-timer`
 
 ## Changelog
 
+- **0.7.6:** Added a restart checkbox, Pomodoro overview settings button, and flashcard and document menu screen toggles.
+
 - **0.7.5:** Added Pomodoro settings and info buttons; simplified the user README.
 
 - **0.7.4:** Small tomato icon and a tighter background for the minimized clock.
@@ -49,6 +51,8 @@ Author: Roland Russwurm · Plugin ID: `rr-study-timer`
 
 The current plugin interface uses German labels. This README explains them in English; use the exact German command above when searching.
 
+The Pomodoro overview in **Flashcards → Stats** has a gear button that opens settings directly at the Pomodoro section. From a document’s **…** menu or during review, **… → RR Study Timer - Pomodoro** shows or hides the shared timer window. Hiding the window does not pause the timer.
+
 ## Status bar settings
 
 During flashcard review, open the **…** menu and select **RR Study Timer**. You can also type `/rrstudytimer` in the editor's slash menu or find **RR Study Timer: Settings** in command search. All entry points open the same settings popup, with a scrollable body and **Save** and **Cancel** at the bottom. Settings apply during review after saving; no plugin restart is needed for the status bar or Pomodoro options. When upgrading from 0.6.0, fully reload RemNote to replace the old widget registration.
@@ -78,7 +82,7 @@ In **… → RR Study Timer**, enable **Pomodoro Timer** and enter a duration in
 - Add **Pomodoro time** to any status-bar position to show the countdown.
 - A blue line spans the top of the status bar at the start and shrinks toward zero.
 - At zero, the displayed time blinks, a single RemNote notification says the Pomodoro is complete, and the tomato comic zooms into view in a centered popup. Click the tomato to close it. If Pomodoro time is not selected, a clickable blinking 0:00 timer still appears, without completion text.
-- The timer stays at zero until you click the blinking countdown. Clicking starts a fresh interval with the configured duration and refills the blue line. You can also restart through settings.
+- The timer stays at zero until you click the blinking countdown. Clicking starts a fresh interval with the configured duration and refills the blue line. You can also check **Restart Pomodoro on Save** in settings. It starts unchecked each time you open settings; uncheck it to cancel the restart before saving.
 - Changing only the status-bar layout preserves the current countdown. Leaving and re-entering review also preserves it while the plugin remains running.
 - Reloading RemNote or restarting the plugin starts a fresh interval. The enabled state, duration, and status-bar layout are saved; a partially completed countdown is not synchronized between devices.
 

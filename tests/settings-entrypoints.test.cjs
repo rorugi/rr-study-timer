@@ -12,7 +12,7 @@ test('upgrading replaces the floating widget; review menu and slash command open
   require.extensions['.css'] = () => {};
   Module._load = function(id, ...args) {
     if (id === '@remnote/plugin-sdk') return { WidgetLocation: locations,
-      PluginCommandMenuLocation: { QueueMenu: 'QueueMenu' },
+      PluginCommandMenuLocation: { QueueMenu: 'QueueMenu', DocumentMenu: 'DocumentMenu' },
       declareIndexPlugin: (on, off) => { activate = on; deactivate = off; } };
     if (id === '../tracking_service') return { startTracking: async () => async () => { stops++; } };
     return originalLoad.call(this, id, ...args);
@@ -22,6 +22,7 @@ test('upgrading replaces the floating widget; review menu and slash command open
 
   const widgets = new Map([['settings:FloatingWidget', { dimensions: { height: 'auto', width: 480 } }]]);
   const menus = new Map(), commands = new Map(), opened = [], registrationEvents = [];
+  const closedWindows = [];
   const plugin = {
     settings: { registerNumberSetting: async () => {} },
     app: {
@@ -35,7 +36,7 @@ test('upgrading replaces the floating widget; review menu and slash command open
       assert.ok(widgets.has(`${file}:Popup`), 'openPopup must target a widget registered at Popup');
       opened.push({ file, context });
     } },
-    window: { openWidgetInPane: async () => {},
+    window: { closeFloatingWidget: async id => closedWindows.push(id), openWidgetInPane: async () => {},
       openFloatingWidget: async (file, position, container, outside) => {
         assert.equal(file,'pomodoro_window'); assert.equal(outside,false);
         assert.equal(container,undefined,'a nonexistent host container makes RemNote immediately close the window');
@@ -66,5 +67,19 @@ test('upgrading replaces the floating widget; review menu and slash command open
   const pomodoroCommand=commands.get('rrpomodoro'); assert.equal(pomodoroCommand.quickCode,'rrpomodoro');
   await pomodoroCommand.action(); await pomodoroCommand.action();
   assert.equal(opened.filter(item=>item.floating==='pomodoro_window').length,1);
+  const screenMenu = menus.get('rr-study-timer-pomodoro-screen');
+  assert.equal(screenMenu.name, 'RR Study Timer - Pomodoro');
+  assert.equal(screenMenu.location, 'QueueMenu');
+  await screenMenu.action();
+  assert.deepEqual(closedWindows, ['timer-window']);
+  await screenMenu.action();
+  assert.equal(opened.filter(item => item.floating === 'pomodoro_window').length, 2);
+  const documentMenu = menus.get('rr-study-timer-pomodoro-document-screen');
+  assert.equal(documentMenu.name, 'RR Study Timer - Pomodoro');
+  assert.equal(documentMenu.location, 'DocumentMenu');
+  await documentMenu.action();
+  assert.equal(closedWindows.length, 2);
+  await documentMenu.action();
+  assert.equal(opened.filter(item => item.floating === 'pomodoro_window').length, 3);
   await deactivate(plugin); assert.equal(stops, 1);
 });
