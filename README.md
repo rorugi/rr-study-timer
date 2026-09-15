@@ -1,13 +1,14 @@
 # RR Study Timer
 
-Tracks active flashcard **study time** in RemNote, with a compact timer during review and daily and weekly statistics.
-**Pomodoro Timer** for flashcards and general learning tasks.
+**RR Study Timer** tracks active flashcard study time in RemNote, with a compact timer during review and daily and weekly statistics.
 
 See how long you have studied, how many card reviews you have completed, and which documents or folders received your attention. Tracking starts automatically during flashcard review and pauses after detected inactivity.
 
 Author: Roland Russwurm · Plugin ID: `rr-study-timer`
 
 ## Changelog
+
+- **0.7.7:** Shortened the document menu entry to RR Pomodoro.
 
 - **0.7.6:** Added a restart checkbox, Pomodoro overview settings button, and flashcard and document menu screen toggles.
 
@@ -52,7 +53,7 @@ Author: Roland Russwurm · Plugin ID: `rr-study-timer`
 
 The current plugin interface uses German labels. This README explains them in English; use the exact German command above when searching.
 
-The Pomodoro overview in **Flashcards → Stats** has a gear button that opens settings directly at the Pomodoro section. From a document’s **…** menu or during review, **… → RR Study Timer - Pomodoro** shows or hides the shared timer window. Hiding the window does not pause the timer.
+The Pomodoro overview in **Flashcards → Stats** has a gear button that opens settings directly at the Pomodoro section. In a document, **… → RR Pomodoro** shows or hides the shared timer window. During review, use **… → RR Study Timer - Pomodoro**. Hiding the window does not pause the timer.
 
 ## Status bar settings
 
