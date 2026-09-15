@@ -619,3 +619,6 @@
   }
 }
 
+
+.pomodoro-stats__header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 6px; }
+.pomodoro-stats__header h2 { margin: 0; }

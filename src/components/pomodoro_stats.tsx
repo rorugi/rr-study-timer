@@ -8,6 +8,12 @@ export function PomodoroStats() {
   const plugin = usePlugin();
   const [data, setData] = useState<{ date: string; records: PomodoroRecord[] }>();
   const [error, setError] = useState(false);
+  const [settingsError, setSettingsError] = useState(false);
+  const openSettings = async () => {
+    setSettingsError(false);
+    try { await withDeadline(plugin.widget.openPopup('settings', { section: 'pomodoro' })); }
+    catch { setSettingsError(true); }
+  };
   useEffect(() => {
     let closed = false, busy = false;
     const refresh = async () => {
@@ -28,7 +34,11 @@ export function PomodoroStats() {
   const records = data?.date === getLocalDateKey() ? data.records : undefined;
   const root = (plugin.rootURL ?? '.').replace(/\/$/, '');
   return <section className="pomodoro-stats" aria-label="Pomodoro">
-    <h2>Pomodoro</h2>
+    <header className="pomodoro-stats__header"><h2>Pomodoro</h2>
+      <button type="button" className="pomodoro-window__icon-button" aria-label="Pomodoro settings"
+        title="Pomodoro settings" onClick={() => void openSettings()}>⚙</button>
+    </header>
+    {settingsError && <p role="alert">Could not open settings. Please try again.</p>}
     <p>{records ? `${records.length} completed today` : error ? 'Could not load Pomodoros.' : 'Loading…'}</p>
     {error && records && <p role="status">Updates temporarily unavailable.</p>}
     {records?.length === 0 && <p className="pomodoro-stats__empty">Your finished Pomodoros will appear here.</p>}
