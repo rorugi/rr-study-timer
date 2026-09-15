@@ -68,14 +68,14 @@ test('upgrading replaces the floating widget; review menu and slash command open
   await pomodoroCommand.action(); await pomodoroCommand.action();
   assert.equal(opened.filter(item=>item.floating==='pomodoro_window').length,1);
   const screenMenu = menus.get('rr-study-timer-pomodoro-screen');
-  assert.equal(screenMenu.name, 'RR Study Timer - Pomodoro Screen');
+  assert.equal(screenMenu.name, 'RR Study Timer - Pomodoro');
   assert.equal(screenMenu.location, 'QueueMenu');
   await screenMenu.action();
   assert.deepEqual(closedWindows, ['timer-window']);
   await screenMenu.action();
   assert.equal(opened.filter(item => item.floating === 'pomodoro_window').length, 2);
   const documentMenu = menus.get('rr-study-timer-pomodoro-document-screen');
-  assert.equal(documentMenu.name, 'RR Study Timer - Pomodoro Screen');
+  assert.equal(documentMenu.name, 'RR Study Timer - Pomodoro');
   assert.equal(documentMenu.location, 'DocumentMenu');
   await documentMenu.action();
   assert.equal(closedWindows.length, 2);
