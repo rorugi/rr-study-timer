@@ -632,8 +632,21 @@
 
 .pomodoro-window__name { grid-column: 1 / -1; display: flex; align-items: center; gap: 8px; }
 .pomodoro-window__name input { min-width: 0; width: 100%; padding: 6px; border: 1px solid #aaa; border-radius: 4px; background: transparent; color: inherit; }
-.pomodoro-window__colors .pomodoro-window__save-name { grid-column: 1 / -1; justify-content: center; border-color: #aaa; }
+.pomodoro-window__colors .pomodoro-window__save-name { justify-content: center; flex: 0 0 32px; padding: 4px; color: #888; }
+.pomodoro-window__colors .pomodoro-window__save-name[data-dirty="true"] { color: #ed8b23; }
+.pomodoro-window__save-name:disabled { cursor: default; }
 .pomodoro-stats__day h3 { font-size: 12px; margin: 10px 0 6px; opacity: .8; }
-.pomodoro-window__description { max-height: 320px; overflow-y: auto; }
+.pomodoro-window { max-height: 560px; overflow-y: auto; overscroll-behavior: contain; }
+.pomodoro-window__description { overflow: visible; }
 .pomodoro-window__description .pomodoro-stats { padding: 12px; margin-top: 12px; }
 .pomodoro-window__description .pomodoro-stats__tooltip { bottom: auto; top: 100%; left: 0; width: 180px; }
+
+.pomodoro-week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 0; margin-top: 16px; }
+.pomodoro-week__column { min-width: 0; text-align: center; }
+.pomodoro-week__stack { height: var(--pomodoro-stack-height); display: flex; flex-direction: column-reverse; align-items: center; justify-content: flex-start; gap: 2px; border-bottom: 1px solid var(--rn-clr-border-primary, #ddd); background: repeating-linear-gradient(to top, transparent 0, transparent calc(25% - 1px), #8882 calc(25% - 1px), #8882 25%); }
+.pomodoro-week__stack .pomodoro-stats__item { flex-shrink: 0; }
+.pomodoro-week__stack img { width: 28px; height: 28px; max-width: 100%; }
+.pomodoro-week time { display: block; margin-top: 8px; font-size: 13px; opacity: .75; }
+.pomodoro-week__count { display: block; font-size: 12px; margin-top: 4px; opacity: .65; }
+.pomodoro-week .pomodoro-week__caption { grid-column: 1 / -1; text-align: right; font-size: 11px; opacity: .65; margin: 14px 0 0; }
+.pomodoro-week__column:nth-child(n+4) .pomodoro-stats__tooltip { left: auto; right: 0; }
