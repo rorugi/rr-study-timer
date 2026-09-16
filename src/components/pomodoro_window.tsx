@@ -1,3 +1,4 @@
+import { POMODORO_COLORS, normalizePomodoroColor, pomodoroIcon, type PomodoroColor } from '../pomodoro_colors';
 import { usePlugin, WidgetLocation } from '@remnote/plugin-sdk';
 import { useEffect, useState } from 'react';
 import { withDeadline } from '../deadline';
@@ -13,6 +14,22 @@ export function PomodoroWindow({ docked = false }: { docked?: boolean } = {}) {
   const [busy, setBusy] = useState(false);
   const [minimized, setMinimized] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
+  const [showColors, setShowColors] = useState(false);
+  const [savingColor, setSavingColor] = useState(false);
+  const [selectedColor, setSelectedColor] = useState<PomodoroColor>();
+  useEffect(() => {
+    if (selectedColor && state?.settings.pomodoroColor === selectedColor) setSelectedColor(undefined);
+  }, [state?.settings.pomodoroColor, selectedColor]);
+  const chooseColor = async (color: PomodoroColor) => {
+    if (savingColor) return;
+    setSavingColor(true); setError('');
+    try {
+      const settings = normalizeSettings(await withDeadline(plugin.storage.getSynced(SETTINGS_KEY)));
+      await withDeadline(plugin.storage.setSynced(SETTINGS_KEY, { ...settings, pomodoroColor: color }));
+      setSelectedColor(color); setShowColors(false);
+    } catch { setError('Could not save the color. Please try again.'); }
+    finally { setSavingColor(false); }
+  };
   const openSettings = async () => {
     try { await withDeadline(plugin.widget.openPopup('settings', { section: 'pomodoro' })); }
     catch { setError('Could not open settings. Please try again.'); }
@@ -62,6 +79,7 @@ export function PomodoroWindow({ docked = false }: { docked?: boolean } = {}) {
     } catch { setError('Could not close the window. Please try again.'); }
   };
   const timer = state?.pomodoro;
+  const color = selectedColor ?? normalizePomodoroColor(state?.settings.pomodoroColor);
   const seconds = Math.ceil((timer?.remainingMs ?? 25 * 60000) / 1000);
   const time = `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
   const fraction = timer ? Math.max(0, Math.min(1, timer.remainingMs / timer.durationMs)) : 1;
@@ -70,7 +88,7 @@ export function PomodoroWindow({ docked = false }: { docked?: boolean } = {}) {
   if (minimized) return <main className="pomodoro-window pomodoro-window--mini">
     <button type="button" className={`pomodoro-window__mini-clock${timer?.finished ? ' study-timer__finished' : ''}`}
       aria-label="Restore Pomodoro window" title="Drag to move; click to restore" {...dragHandlers} onClick={() => { if (!consumeDragClick()) setMinimized(false); }}>
-      <img className="pomodoro-window__mini-icon" src={`${root}/pomodoro-tomato-comic.png`} alt="" draggable={false} />
+      <img className="pomodoro-window__mini-icon" src={pomodoroIcon(root, color)} alt="" draggable={false} />
       <span>{state ? time : '–:––'}</span>
     </button>
   </main>;
@@ -87,12 +105,21 @@ export function PomodoroWindow({ docked = false }: { docked?: boolean } = {}) {
           strokeDasharray={`${fraction * 100} 100`} transform="rotate(-90 150 150)" />
       </svg>
       <div className="pomodoro-window__center">
-        <img src={`${root}/pomodoro-tomato-comic.png`} alt="Pomodoro tomato" draggable={false} />
+        <button type="button" className="pomodoro-window__choose-color" aria-label="Choose Pomodoro color"
+          aria-expanded={showColors} aria-controls="pomodoro-colors" onClick={() => setShowColors(value => !value)}>
+          <img src={pomodoroIcon(root, color)} alt={`${color} Pomodoro tomato`} draggable={false} />
+        </button>
         <button type="button" className={timer?.finished ? 'study-timer__finished' : ''}
           disabled={!timer?.finished || busy} aria-label={timer?.finished ? 'Restart Pomodoro' : 'Time remaining'}
           onClick={() => void control('start')}>{state ? time : '–:––'}</button>
       </div>
     </div>
+    {showColors && <fieldset id="pomodoro-colors" className="pomodoro-window__colors" disabled={savingColor}
+      onKeyDown={event => { if (event.key === 'Escape') setShowColors(false); }}>
+      <legend>Pomodoro color</legend>
+      {POMODORO_COLORS.map(([id, label, hex]) => <button key={id} type="button" aria-pressed={color === id}
+        onClick={() => void chooseColor(id)}><span style={{ backgroundColor: hex }} aria-hidden="true" />{label}{color === id ? ' ✓' : ''}</button>)}
+    </fieldset>}
     <p className="pomodoro-window__status">{!state ? 'Connecting…' : !timer?.enabled ? 'Ready to start' : timer.finished ? 'Time for a break' : running ? 'Running independently' : state.pomodoroMode === 'paused' ? 'Paused' : 'Following flashcard activity'}</p>
     <div className="pomodoro-window__controls">
       <button type="button" className="pomodoro-window__primary" disabled={busy || !state}

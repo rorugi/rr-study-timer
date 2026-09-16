@@ -1,5 +1,6 @@
-import { renderWidget, usePlugin } from '@remnote/plugin-sdk';
-import { CSSProperties, useRef, useState } from 'react';
+import { pomodoroIcon, normalizePomodoroColor, type PomodoroColor } from '../pomodoro_colors';
+import { renderWidget, usePlugin, WidgetLocation } from '@remnote/plugin-sdk';
+import { CSSProperties, useEffect, useRef, useState } from 'react';
 import '../style.css';
 
 const confetti = Array.from({ length: 80 }, (_, i) => {
@@ -18,6 +19,8 @@ const confetti = Array.from({ length: 80 }, (_, i) => {
 
 export function PomodoroComplete() {
   const plugin = usePlugin();
+  const [color, setColor] = useState<PomodoroColor>('red');
+  useEffect(() => { void plugin.widget.getWidgetContext<WidgetLocation.Popup>().then(context => setColor(normalizePomodoroColor(context?.contextData?.color))).catch(() => {}); }, [plugin]);
   const [loaded, setLoaded] = useState(false);
   const [failed, setFailed] = useState(false);
   const [error, setError] = useState('');
@@ -35,7 +38,7 @@ export function PomodoroComplete() {
     </div>}
     <button type="button" className={`pomodoro-celebration__button${loaded || failed ? ' pomodoro-celebration__button--ready' : ''}`}
       aria-label="Pomodoro complete. Click to close." onClick={() => void close()}>
-      {!failed && <img src={`${root}/pomodoro-tomato-comic.png`} alt="Smiling tomato giving a thumbs-up"
+      {!failed && <img src={pomodoroIcon(root, color)} alt="Smiling tomato giving a thumbs-up"
         onLoad={() => setLoaded(true)} onError={() => setFailed(true)} draggable={false} />}
       {failed && <span className="pomodoro-celebration__fallback">🍅<br />Pomodoro complete!<br /><small>Click to close</small></span>}
     </button>

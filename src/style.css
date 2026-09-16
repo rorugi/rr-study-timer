@@ -622,3 +622,10 @@
 
 .pomodoro-stats__header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 6px; }
 .pomodoro-stats__header h2 { margin: 0; }
+
+.pomodoro-window__center .pomodoro-window__choose-color { width: 72%; height: 72%; display: flex; align-items: center; justify-content: center; }
+.pomodoro-window__choose-color img { width: 100%; height: 100%; }
+.pomodoro-window__colors { border: 1px solid var(--rn-clr-border-primary, #ddd); border-radius: 8px; margin: 8px 0; padding: 8px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+.pomodoro-window__colors button { display: flex; align-items: center; gap: 4px; min-height: 36px; background: transparent; color: inherit; border: 1px solid transparent; border-radius: 5px; padding: 4px; font: 12px system-ui; cursor: pointer; }
+.pomodoro-window__colors button[aria-pressed="true"] { border-color: #2684ff; }
+.pomodoro-window__colors button span { width: 12px; height: 12px; border: 1px solid #888; border-radius: 50%; flex-shrink: 0; }

@@ -2,3 +2,5 @@ node_modules/
 dist/
 PluginZip.zip
 .DS_Store
+
+/public/pomodoro-colors/

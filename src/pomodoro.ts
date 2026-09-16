@@ -1,11 +1,13 @@
+import { normalizePomodoroColor, type PomodoroColor } from './pomodoro_colors';
 import type { TimerSettings } from './settings';
 import type { PomodoroRecord } from './pomodoro_history';
 
-export type PomodoroSnapshot = { enabled: boolean; durationMs: number; remainingMs: number; finished: boolean };
+export type PomodoroSnapshot = { enabled: boolean; durationMs: number; remainingMs: number; finished: boolean; color: PomodoroColor };
 
 /** Owned by the tracking service, independent of widget mounts and queue sessions. */
 export class PomodoroTimer {
   private enabled = false;
+  private color: PomodoroColor = 'red';
   private durationMs = 25 * 60000;
   private remainingMs = this.durationMs;
   private restartToken = '';
@@ -22,6 +24,7 @@ export class PomodoroTimer {
       this.notificationPending = false;
       this.startedAt = null;
     }
+    this.color = normalizePomodoroColor(settings.pomodoroColor);
     this.enabled = settings.pomodoroEnabled;
     this.durationMs = duration;
     this.restartToken = settings.restartToken;
@@ -34,7 +37,7 @@ export class PomodoroTimer {
     if (this.remainingMs === 0) {
       this.notificationPending = true;
       this.completed.push({ id: `${this.runId}:${++this.sequence}`, startedAt: this.startedAt,
-        completedAt: intervalEnd - activeMs + usedMs, durationMs: this.durationMs });
+        completedAt: intervalEnd - activeMs + usedMs, durationMs: this.durationMs, color: this.color });
     }
   }
   takeNotification() {
@@ -51,6 +54,6 @@ export class PomodoroTimer {
   }
   snapshot(): PomodoroSnapshot {
     return { enabled: this.enabled, durationMs: this.durationMs, remainingMs: this.remainingMs,
-      finished: this.enabled && this.remainingMs === 0 };
+      color: this.color, finished: this.enabled && this.remainingMs === 0 };
   }
 }

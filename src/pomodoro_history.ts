@@ -1,7 +1,8 @@
+import type { PomodoroColor } from './pomodoro_colors';
 import type { RNPlugin } from '@remnote/plugin-sdk';
 import { getLocalDateKey } from './daily_stats';
 
-export type PomodoroRecord = { id: string; startedAt: number; completedAt: number; durationMs: number };
+export type PomodoroRecord = { id: string; startedAt: number; completedAt: number; durationMs: number; color?: PomodoroColor };
 export const POMODORO_HISTORY_PREFIX = 'rr-study-timer:pomodoros:v1:';
 let writes: Promise<void> = Promise.resolve();
 

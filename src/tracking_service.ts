@@ -71,11 +71,12 @@ export async function startTracking(plugin: RNPlugin, options = { rpcTimeoutMs: 
       try { await work(); }
       catch (cause) { error = 'Kartenabfrage verzögert – erneuter Versuch folgt.'; console.error('RR Study Timer queue', cause); }
       if (engine.pomodoro.takeNotification()) {
+        const color = engine.pomodoro.completed[engine.pomodoro.completed.length - 1]?.color;
         void flush();
         // Consume once in the service, even if several status widgets are mounted.
         void rpc(plugin.app.toast('RR Study Timer: Pomodoro complete — time for a break!'))
           .catch(cause => console.error('RR Study Timer notification', cause));
-        void rpc(plugin.widget.openPopup('pomodoro_complete', {}, false))
+        void rpc(plugin.widget.openPopup('pomodoro_complete', { color }, false))
           .catch(cause => console.error('RR Study Timer completion popup', cause));
       }
       // Neither persistence nor the session bridge blocks subsequent events/ticks.

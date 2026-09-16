@@ -1,3 +1,4 @@
+import { pomodoroIcon, normalizePomodoroColor } from '../pomodoro_colors';
 import { usePlugin } from '@remnote/plugin-sdk';
 import { useEffect, useState } from 'react';
 import { getDailyPomodoros, pomodoroTiming, type PomodoroRecord } from '../pomodoro_history';
@@ -44,8 +45,8 @@ export function PomodoroStats() {
     {records?.length === 0 && <p className="pomodoro-stats__empty">Your finished Pomodoros will appear here.</p>}
     <div className="pomodoro-stats__icons" role="list" aria-label="Today's completed Pomodoros">
       {records?.map(record => <span key={record.id} role="listitem" tabIndex={0} title={pomodoroTiming(record)}
-        aria-label={pomodoroTiming(record)} className="pomodoro-stats__item">
-        <img src={`${root}/pomodoro-tomato-comic.png`} alt="" width="40" height="40" />
+        aria-label={`${normalizePomodoroColor(record.color)} Pomodoro: ${pomodoroTiming(record)}`} className="pomodoro-stats__item">
+        <img src={pomodoroIcon(root, record.color)} alt="" width="40" height="40" />
         <span className="pomodoro-stats__tooltip" role="tooltip">{pomodoroTiming(record)}</span>
       </span>)}
     </div>
