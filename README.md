@@ -23,10 +23,10 @@ RR Study Timer tracks your active flashcard study time in RemNote, shows daily a
 
 1. Start a flashcard review. The study timer appears below the top bar and starts automatically.
 2. Review as usual. The row shows active time, completed reviews, and average time per completed review.
-3. Open **Flashcards → Stats** for your daily and weekly overview, or search for **Lernzeit anzeigen** (Show study time).
+3. Open **Flashcards → Stats** for your daily and weekly overview.
 4. Open **RR Study Timer: Settings** from command search to customize the row and enable Pomodoro.
 
-You can also open settings with `/rrstudytimer` or **… → RR Study Timer** during review. Some statistics labels and commands are in German.
+You can also open settings with `/rrstudytimer` or **… → RR Study Timer** during review. Some statistics labels are in German.
 
 ## Study time and statistics
 
