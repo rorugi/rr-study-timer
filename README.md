@@ -2,6 +2,8 @@
 
 RR Study Timer tracks your active flashcard study time in RemNote, shows daily and weekly progress, and provides a **Pomodoro timer** for review and other learning tasks.
 
+![RR Study Timer](https://raw.githubusercontent.com/rorugi/rr-study-timer/main/img/docu-02.png)
+
 ## What's new in 0.9.2
 
 - Duration-scaled history icons, dates beneath weekly stacks, and consistent settings icons. Saving a name closes the picker.
