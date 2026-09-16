@@ -2,9 +2,9 @@
 
 RR Study Timer tracks your active flashcard study time in RemNote, shows daily and weekly progress, and provides a Pomodoro timer for review and other learning tasks.
 
-## What's new in 0.9.0
+## What's new in 0.9.1
 
-- Name Pomodoro sessions and see today’s and the last seven days’ history in the Info panel and statistics.
+- Stacked weekly tomato chart, orange/grey name-save icon, and scrolling for the whole Pomodoro window.
 
 ## Getting started
 
@@ -67,9 +67,9 @@ Use `/rrpomodoro` or search for **RR Pomodoro** to open the floating timer. You 
 - **Settings** opens Pomodoro preferences; **Info** explains the timing modes.
 - Drag the title bar to move the window. Use **−** to minimize it to a small clock; click the clock to restore it.
 
-Click the main tomato to enter an optional **Name** (up to 120 characters) and choose **red** (default), **gray**, **orange**, **yellow**, **green**, **black**, **white**, **blue**, or **purple**. Only the body color changes. Changing color keeps the current countdown; the color selected at completion is saved with that session. Use **Save name** or select a color to apply your changes. Names appear only in icon tooltips, including completed sessions. Previous sessions retain their names and colors, and older records appear red without a name.
+Click the main tomato to enter an optional **Name** (up to 120 characters) and choose **red** (default), **gray**, **orange**, **yellow**, **green**, **black**, **white**, **blue**, or **purple**. Only the body color changes. Changing color keeps the current countdown; the color selected at completion is saved with that session. Use the save icon beside the name (orange for unsaved changes, grey when saved) or select a color to apply your changes. Names appear only in icon tooltips, including completed sessions. Previous sessions retain their names and colors, and older records appear red without a name.
 
-**Info** also shows today’s Pomodoros and a seven-day overview, grouped by local date (today plus the previous six days). Both boxes are available in **Flashcards → Stats**.
+**Info** also shows today’s Pomodoros and **Pomodoros this week**, a chart with one stack of tomatoes per day (today plus the previous six days). Both boxes are available in **Flashcards → Stats**.
 
 The floating window and review row share one timer. Hiding or minimizing the window does not pause it. Independent timing does not add time to your flashcard study statistics.
 

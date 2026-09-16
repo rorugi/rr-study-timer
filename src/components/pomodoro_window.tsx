@@ -23,13 +23,13 @@ export function PomodoroWindow({ docked = false }: { docked?: boolean } = {}) {
   useEffect(() => {
     if (selectedColor && state?.settings.pomodoroColor === selectedColor) setSelectedColor(undefined);
   }, [state?.settings.pomodoroColor, selectedColor]);
-  const chooseColor = async (color: PomodoroColor) => {
+  const chooseColor = async (color: PomodoroColor, closePicker = true) => {
     if (savingColor) return;
     setSavingColor(true); setError('');
     try {
       const settings = normalizeSettings(await withDeadline(plugin.storage.getSynced(SETTINGS_KEY)));
       await withDeadline(plugin.storage.setSynced(SETTINGS_KEY, { ...settings, pomodoroColor: color, pomodoroName: normalizePomodoroName(nameDraft) }));
-      setSelectedColor(color); setSelectedName(normalizePomodoroName(nameDraft)); setShowColors(false);
+      setSelectedColor(color); setSelectedName(normalizePomodoroName(nameDraft)); if (closePicker) setShowColors(false);
     } catch { setError('Could not save the color. Please try again.'); }
     finally { setSavingColor(false); }
   };
@@ -124,11 +124,20 @@ export function PomodoroWindow({ docked = false }: { docked?: boolean } = {}) {
     {showColors && <fieldset id="pomodoro-colors" className="pomodoro-window__colors" disabled={savingColor}
       onKeyDown={event => { if (event.key === 'Escape') setShowColors(false); }}>
       <legend>Pomodoro session</legend>
-      <label className="pomodoro-window__name">Name
-        <input type="text" maxLength={120} value={nameDraft} placeholder="Optional" onChange={event => setNameDraft(event.target.value)}
-          onKeyDown={event => { if (event.key === 'Enter') { event.preventDefault(); void chooseColor(color); } }} />
-      </label>
-      <button className="pomodoro-window__save-name" type="button" onClick={() => void chooseColor(color)}>Save name</button>
+      <div className="pomodoro-window__name">
+        <label htmlFor="pomodoro-name">Name</label>
+        <input id="pomodoro-name" type="text" maxLength={120} value={nameDraft} placeholder="Optional" onChange={event => setNameDraft(event.target.value)}
+          onKeyDown={event => { if (event.key === 'Enter') { event.preventDefault(); void chooseColor(color, false); } }} />
+        <button className="pomodoro-window__save-name" type="button"
+          data-dirty={normalizePomodoroName(nameDraft) !== name}
+          aria-label={normalizePomodoroName(nameDraft) !== name ? 'Save name' : 'Name saved'}
+          title={normalizePomodoroName(nameDraft) !== name ? 'Save name' : 'Name saved'}
+          disabled={savingColor || normalizePomodoroName(nameDraft) === name} onClick={() => void chooseColor(color, false)}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" aria-hidden="true">
+            <path d="M4 3h13l4 4v14H3V3zm3 0v6h9V3M7 21v-8h10v8" />
+          </svg>
+        </button>
+      </div>
       {POMODORO_COLORS.map(([id, label, hex]) => <button key={id} type="button" aria-pressed={color === id}
         onClick={() => void chooseColor(id)}><span style={{ backgroundColor: hex }} aria-hidden="true" />{label}{color === id ? ' ✓' : ''}</button>)}
     </fieldset>}
