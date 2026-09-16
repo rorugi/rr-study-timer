@@ -7,7 +7,7 @@ const { PomodoroTimer } = require('../src/pomodoro');
 const card = { id: 'a', entity: { id: 'doc', title: 'Document', kind: 'document' } };
 
 test('default layout is preserved; all metrics and duplicates survive settings round-trip', () => {
-  assert.deepEqual(normalizeSettings(undefined), { positions: ['session', 'cards', 'average'], pomodoroEnabled: false, pomodoroMinutes: 25, pomodoroColor: 'red', restartToken: '' });
+  assert.deepEqual(normalizeSettings(undefined), { positions: ['session', 'cards', 'average'], pomodoroEnabled: false, pomodoroMinutes: 25, pomodoroColor: 'red', pomodoroName: '', restartToken: '' });
   const positions = [...METRICS.map(([id]) => id), 'document'];
   assert.deepEqual(normalizeSettings({ positions }).positions, positions);
   assert.deepEqual(normalizeSettings({ positions: ['invalid'] }).positions, defaultSettings().positions);

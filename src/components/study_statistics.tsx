@@ -225,7 +225,7 @@ export function DailyStatistics({ section = 'all' }: { section?: 'all' | 'week' 
           Zuordnung über stabile RemNote-ID; Umbenennen verändert die Statistik nicht. Pausen und erkannte Inaktivität werden nicht mitgezählt.
         </div>
       </section>}
-      {section === 'all' && <PomodoroStats />}
+      {section === 'all' && <><PomodoroStats /><PomodoroStats days={7} /></>}
     </div>
   );
 }
