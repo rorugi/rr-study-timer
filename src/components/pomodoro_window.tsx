@@ -1,3 +1,4 @@
+import { SettingsIcon } from './settings_icon';
 import { PomodoroStats } from './pomodoro_stats';
 import { POMODORO_COLORS, normalizePomodoroColor, pomodoroIcon, type PomodoroColor } from '../pomodoro_colors';
 import { usePlugin, WidgetLocation } from '@remnote/plugin-sdk';
@@ -127,12 +128,12 @@ export function PomodoroWindow({ docked = false }: { docked?: boolean } = {}) {
       <div className="pomodoro-window__name">
         <label htmlFor="pomodoro-name">Name</label>
         <input id="pomodoro-name" type="text" maxLength={120} value={nameDraft} placeholder="Optional" onChange={event => setNameDraft(event.target.value)}
-          onKeyDown={event => { if (event.key === 'Enter') { event.preventDefault(); void chooseColor(color, false); } }} />
+          onKeyDown={event => { if (event.key === 'Enter') { event.preventDefault(); void chooseColor(color); } }} />
         <button className="pomodoro-window__save-name" type="button"
           data-dirty={normalizePomodoroName(nameDraft) !== name}
           aria-label={normalizePomodoroName(nameDraft) !== name ? 'Save name' : 'Name saved'}
           title={normalizePomodoroName(nameDraft) !== name ? 'Save name' : 'Name saved'}
-          disabled={savingColor || normalizePomodoroName(nameDraft) === name} onClick={() => void chooseColor(color, false)}>
+          disabled={savingColor || normalizePomodoroName(nameDraft) === name} onClick={() => void chooseColor(color)}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" aria-hidden="true">
             <path d="M4 3h13l4 4v14H3V3zm3 0v6h9V3M7 21v-8h10v8" />
           </svg>
@@ -154,9 +155,7 @@ export function PomodoroWindow({ docked = false }: { docked?: boolean } = {}) {
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 11v6m0-10v1" /></svg>
       </button>
       <button type="button" className="pomodoro-window__icon-button" aria-label="Pomodoro settings" title="Pomodoro settings" onClick={() => void openSettings()}>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" aria-hidden="true">
-          <path d="m10 3-.5 2-2 .9-1.9-.6-2 3.4 1.5 1.5v2.4l-1.5 1.5 2 3.4 1.9-.6 2 .9.5 2h4l.5-2 2-.9 1.9.6 2-3.4-1.5-1.5v-2.4l1.5-1.5-2-3.4-1.9.6-2-.9-.5-2z" /><circle cx="12" cy="11.4" r="3" />
-        </svg>
+        <SettingsIcon />
       </button>
     </div>
     {showInfo && <section id="pomodoro-description" className="pomodoro-window__description" aria-label="About Pomodoro timing">
