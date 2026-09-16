@@ -1,3 +1,4 @@
+import { normalizePomodoroColor, type PomodoroColor } from './pomodoro_colors';
 export const SETTINGS_KEY = 'rr-study-timer:settings:v1';
 export const POMODORO_RESTART_KEY = 'rr-study-timer:pomodoro-restart:v1';
 export const POMODORO_CONTROL_KEY = 'rr-study-timer:pomodoro-control:v1';
@@ -17,11 +18,12 @@ export type TimerSettings = {
   positions: Metric[];
   pomodoroEnabled: boolean;
   pomodoroMinutes: number;
+  pomodoroColor: PomodoroColor;
   restartToken: string;
 };
 export function defaultSettings(): TimerSettings {
   return { positions: ['session', 'cards', 'average'], pomodoroEnabled: false,
-    pomodoroMinutes: 25, restartToken: '' };
+    pomodoroMinutes: 25, pomodoroColor: 'red', restartToken: '' };
 }
 export function normalizeSettings(value: unknown): TimerSettings {
   const defaults = defaultSettings();
@@ -33,6 +35,7 @@ export function normalizeSettings(value: unknown): TimerSettings {
   return {
     positions: positions.length ? positions : defaults.positions,
     pomodoroEnabled: input.pomodoroEnabled === true,
+    pomodoroColor: normalizePomodoroColor(input.pomodoroColor),
     pomodoroMinutes: typeof minutes === 'number' && Number.isFinite(minutes) && minutes >= 1 && minutes <= 1440
       ? minutes : defaults.pomodoroMinutes,
     restartToken: typeof input.restartToken === 'string' ? input.restartToken : '',

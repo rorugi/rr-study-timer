@@ -1,9 +1,11 @@
 {
   "private": true,
   "name": "rr-study-timer",
-  "version": "0.7.7",
+  "version": "0.8.0",
   "license": "MIT",
   "scripts": {
+    "predev": "node scripts/pomodoro-colors.cjs",
+    "prebuild": "node scripts/pomodoro-colors.cjs",
     "check-types": "tsc",
     "dev": "cross-env NODE_ENV=development webpack-dev-server --color --progress --no-open",
     "build": "tsc --noEmit && remnote-plugin validate && cross-env NODE_ENV=production webpack --color && node scripts/package.cjs",

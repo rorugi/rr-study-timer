@@ -7,8 +7,8 @@
   "enableOnMobile": true,
   "version": {
     "major": 0,
-    "minor": 7,
-    "patch": 7
+    "minor": 8,
+    "patch": 0
   },
   "description": "Track your active flashcard study time in RemNote. See cards learned today, daily and weekly study time, and time spent per document or folder. Automatically excludes inactive time.",
   "requestNative": false,

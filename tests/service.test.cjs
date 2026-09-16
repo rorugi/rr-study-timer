@@ -68,7 +68,7 @@ test('live settings reach the status row and completion produces one service not
     assert.equal(session.get(TIMER_STATE_KEY).pomodoro.remainingMs,45000);
     now+=45000;await settle();
     assert.equal(session.get(TIMER_STATE_KEY).pomodoro.finished,true);assert.equal(notifications.length,1);
-    assert.deepEqual(popups,[['pomodoro_complete',{},false]]);
+    assert.deepEqual(popups,[['pomodoro_complete',{color:'red'},false]]);
     now+=5000;await settle();assert.equal(notifications.length,1);assert.equal(popups.length,1);
     const previousSessionMs=session.get(TIMER_STATE_KEY).sessionMs;
     session.set(POMODORO_RESTART_KEY,{id:'clicked-timer'});await settle();

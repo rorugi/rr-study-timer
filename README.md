@@ -2,9 +2,9 @@
 
 RR Study Timer tracks your active flashcard study time in RemNote, shows daily and weekly progress, and provides a Pomodoro timer for review and other learning tasks.
 
-## What's new in 0.7.7
+## What's new in 0.8.0
 
-- Open or hide the Pomodoro window from the document menu using **RR Pomodoro**.
+- Choose a Pomodoro color and see completed sessions in their saved colors.
 
 ## Getting started
 
@@ -67,6 +67,8 @@ Use `/rrpomodoro` or search for **RR Pomodoro** to open the floating timer. You 
 - **Settings** opens Pomodoro preferences; **Info** explains the timing modes.
 - Drag the title bar to move the window. Use **−** to minimize it to a small clock; click the clock to restore it.
 
+Click the main tomato to choose **red** (default), **gray**, **orange**, **yellow**, **green**, **black**, **white**, **blue**, or **purple**. Only the body color changes. Changing color keeps the current countdown; the color selected at completion is saved with that session. Previous sessions retain their colors, and older records appear red.
+
 The floating window and review row share one timer. Hiding or minimizing the window does not pause it. Independent timing does not add time to your flashcard study statistics.
 
 Completed intervals are saved. Reloading RemNote starts a fresh countdown and returns to flashcard-activity mode; a partially completed interval does not synchronize between devices.
@@ -80,3 +82,4 @@ Only activity recorded while the plugin is running appears in the statistics. Ab
 ## About
 
 Created by Roland Russwurm. Licensed under the MIT License.
+
