@@ -1,4 +1,4 @@
-# RR Study Timer
+# RR Study Timer & Pomodoro
 
 RR Study Timer tracks your active flashcard study time in RemNote, shows daily and weekly progress, and provides a Pomodoro timer for review and other learning tasks.
 
