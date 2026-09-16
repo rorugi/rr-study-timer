@@ -1,6 +1,8 @@
-# RR Study Timer
+# RR Study Timer & Pomodoro
 
-RR Study Timer tracks your active flashcard study time in RemNote, shows daily and weekly progress, and provides a Pomodoro timer for review and other learning tasks.
+RR Study Timer tracks your active flashcard study time in RemNote, shows daily and weekly progress, and provides a **Pomodoro timer** for review and other learning tasks.
+
+![RR Study Timer](https://raw.githubusercontent.com/rorugi/rr-study-timer/main/img/docu-02.png)
 
 ## What's new in 0.9.2
 
@@ -75,6 +77,8 @@ The floating window and review row share one timer. Hiding or minimizing the win
 
 Completed intervals are saved. Reloading RemNote starts a fresh countdown and returns to flashcard-activity mode; a partially completed interval does not synchronize between devices.
 
+History tomatoes use standard size for 20–30 minutes. Shorter intervals scale down to 50% (10 minutes or less); longer intervals scale up to 150% (45 minutes or more).
+
 ## Privacy and saved data
 
 Study statistics and completed Pomodoros are saved through RemNote's synchronized plugin storage. Records include study dates, durations, review counts, and document or folder references. The plugin does not send data directly to an external analytics service.
@@ -83,7 +87,8 @@ Only activity recorded while the plugin is running appears in the statistics. Ab
 
 ## About
 
-Created by Roland Russwurm. Licensed under the MIT License.
+Created by Roland Russwurm. 
 
+## License
 
-History tomatoes use standard size for 20–30 minutes. Shorter intervals scale down to 50% (10 minutes or less); longer intervals scale up to 150% (45 minutes or more).
+Licensed under the MIT License.
