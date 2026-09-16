@@ -4,9 +4,20 @@ RR Study Timer tracks your active flashcard study time in RemNote, shows daily a
 
 ![RR Study Timer](https://raw.githubusercontent.com/rorugi/rr-study-timer/main/img/docu-02-sm.png)
 
-## What's new in 0.9.2
+## What's new
 
-- Duration-scaled history icons, dates beneath weekly stacks, and consistent settings icons. Saving a name closes the picker.
+<!-- Keep the latest 10 version updates, newest first, with one concise bullet per version. -->
+
+- **0.9.2:** Duration-scaled history icons, dates below weekly stacks, consistent settings icons, and save-and-close for names.
+- **0.9.1:** Stacked weekly tomato chart, orange/grey name-save icon, and scrolling for the whole Pomodoro window.
+- **0.9.0:** Session names in tooltips and today’s/seven-day history in the Info panel and statistics.
+- **0.8.0:** Nine Pomodoro colors, saved with completed sessions and shown in history.
+- **0.7.7:** Shortened the document menu entry to **RR Pomodoro**.
+- **0.7.6:** Restart checkbox, settings shortcut in the overview, and document/review menu access.
+- **0.7.5:** Pomodoro settings and Info buttons, plus a simpler user README.
+- **0.7.4:** Small tomato icon and a tighter background for the minimized clock.
+- **0.7.3:** Drag the Pomodoro freely; removed the pane option that caused errors.
+- **0.7.2:** Minimize the Pomodoro to a compact clock.
 
 ## Getting started
 
