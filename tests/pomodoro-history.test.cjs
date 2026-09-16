@@ -77,3 +77,28 @@ test('all SVG variants change only the supplied body path', () => {
     assert.equal(svg,source.replace(body,body.replace('fill:#f92015',`fill:${color}`)));
   }
 });
+
+
+test('session names are trimmed and captured without restarting or renaming previous sessions', () => {
+  const { PomodoroTimer } = require('../src/pomodoro');
+  const { normalizeSettings } = require('../src/settings');
+  const timer=new PomodoroTimer(); const settings={...defaultSettings(),pomodoroEnabled:true,pomodoroMinutes:1};
+  timer.configure(settings); timer.advance(30000,30000);
+  timer.configure({...settings,pomodoroName:'  Spanish  '});
+  assert.equal(timer.snapshot().remainingMs,30000);
+  timer.advance(30000,60000);
+  assert.equal(timer.completed[0].name,'Spanish');
+  assert.match(pomodoroTiming(timer.completed[0]),/^Spanish · /);
+  timer.configure({...settings,pomodoroName:'Math'});
+  assert.equal(timer.completed[0].name,'Spanish');
+  assert.equal(normalizeSettings({pomodoroName:7}).pomodoroName,'');
+});
+
+test('seven day history includes today and six previous local calendar days over month boundaries', async () => {
+  const { getPomodoroDays, POMODORO_HISTORY_PREFIX }=require('../src/pomodoro_history');
+  const keys=[];const plugin={storage:{getSynced:async key=>{keys.push(key);return {}}}};
+  const days=await getPomodoroDays(plugin,7,new Date(2026,2,2,0,1));
+  assert.deepEqual(days.map(d=>d.date),['2026-03-02','2026-03-01','2026-02-28','2026-02-27','2026-02-26','2026-02-25','2026-02-24']);
+  assert.equal(new Set(keys).size,7);assert.ok(keys.every(k=>k.startsWith(POMODORO_HISTORY_PREFIX)));
+  assert.ok(days.every(d=>d.records.length===0));
+});

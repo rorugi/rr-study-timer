@@ -1,8 +1,9 @@
+import { normalizePomodoroName } from './settings';
 import type { PomodoroColor } from './pomodoro_colors';
 import type { RNPlugin } from '@remnote/plugin-sdk';
 import { getLocalDateKey } from './daily_stats';
 
-export type PomodoroRecord = { id: string; startedAt: number; completedAt: number; durationMs: number; color?: PomodoroColor };
+export type PomodoroRecord = { id: string; startedAt: number; completedAt: number; durationMs: number; color?: PomodoroColor; name?: string };
 export const POMODORO_HISTORY_PREFIX = 'rr-study-timer:pomodoros:v1:';
 let writes: Promise<void> = Promise.resolve();
 
@@ -27,5 +28,14 @@ export function savePomodoro(plugin: RNPlugin, record: PomodoroRecord): Promise<
 }
 export function pomodoroTiming(record: PomodoroRecord): string {
   const options: Intl.DateTimeFormatOptions = { dateStyle: 'short', timeStyle: 'medium' };
-  return `${new Date(record.startedAt).toLocaleString(undefined, options)} – ${new Date(record.completedAt).toLocaleString(undefined, options)} · ${Number((record.durationMs / 60000).toFixed(2))} min active`;
+  const name = normalizePomodoroName(record.name);
+  return `${name ? name + ' · ' : ''}${new Date(record.startedAt).toLocaleString(undefined, options)} – ${new Date(record.completedAt).toLocaleString(undefined, options)} · ${Number((record.durationMs / 60000).toFixed(2))} min active`;
+}
+
+export async function getPomodoroDays(plugin: RNPlugin, days = 7, now = new Date()) {
+  return Promise.all(Array.from({ length: days }, (_, index) => {
+    const date = new Date(now.getFullYear(), now.getMonth(), now.getDate() - index);
+    const key = getLocalDateKey(date);
+    return getDailyPomodoros(plugin, key).then(records => ({ date: key, records }));
+  }));
 }

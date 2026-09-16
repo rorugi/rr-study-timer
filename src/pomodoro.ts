@@ -1,5 +1,5 @@
 import { normalizePomodoroColor, type PomodoroColor } from './pomodoro_colors';
-import type { TimerSettings } from './settings';
+import { normalizePomodoroName, type TimerSettings } from './settings';
 import type { PomodoroRecord } from './pomodoro_history';
 
 export type PomodoroSnapshot = { enabled: boolean; durationMs: number; remainingMs: number; finished: boolean; color: PomodoroColor };
@@ -8,6 +8,7 @@ export type PomodoroSnapshot = { enabled: boolean; durationMs: number; remaining
 export class PomodoroTimer {
   private enabled = false;
   private color: PomodoroColor = 'red';
+  private name = '';
   private durationMs = 25 * 60000;
   private remainingMs = this.durationMs;
   private restartToken = '';
@@ -25,6 +26,7 @@ export class PomodoroTimer {
       this.startedAt = null;
     }
     this.color = normalizePomodoroColor(settings.pomodoroColor);
+    this.name = normalizePomodoroName(settings.pomodoroName);
     this.enabled = settings.pomodoroEnabled;
     this.durationMs = duration;
     this.restartToken = settings.restartToken;
@@ -37,7 +39,7 @@ export class PomodoroTimer {
     if (this.remainingMs === 0) {
       this.notificationPending = true;
       this.completed.push({ id: `${this.runId}:${++this.sequence}`, startedAt: this.startedAt,
-        completedAt: intervalEnd - activeMs + usedMs, durationMs: this.durationMs, color: this.color });
+        completedAt: intervalEnd - activeMs + usedMs, durationMs: this.durationMs, color: this.color, name: this.name });
     }
   }
   takeNotification() {

@@ -14,16 +14,20 @@ export const METRICS = [
   ['pomodoro', 'Pomodoro time'],
 ] as const;
 export type Metric = typeof METRICS[number][0];
+export function normalizePomodoroName(value: unknown): string {
+  return typeof value === 'string' ? value.trim().slice(0, 120) : '';
+}
 export type TimerSettings = {
   positions: Metric[];
   pomodoroEnabled: boolean;
   pomodoroMinutes: number;
   pomodoroColor: PomodoroColor;
+  pomodoroName: string;
   restartToken: string;
 };
 export function defaultSettings(): TimerSettings {
   return { positions: ['session', 'cards', 'average'], pomodoroEnabled: false,
-    pomodoroMinutes: 25, pomodoroColor: 'red', restartToken: '' };
+    pomodoroMinutes: 25, pomodoroColor: 'red', pomodoroName: '', restartToken: '' };
 }
 export function normalizeSettings(value: unknown): TimerSettings {
   const defaults = defaultSettings();
@@ -36,6 +40,7 @@ export function normalizeSettings(value: unknown): TimerSettings {
     positions: positions.length ? positions : defaults.positions,
     pomodoroEnabled: input.pomodoroEnabled === true,
     pomodoroColor: normalizePomodoroColor(input.pomodoroColor),
+    pomodoroName: normalizePomodoroName(input.pomodoroName),
     pomodoroMinutes: typeof minutes === 'number' && Number.isFinite(minutes) && minutes >= 1 && minutes <= 1440
       ? minutes : defaults.pomodoroMinutes,
     restartToken: typeof input.restartToken === 'string' ? input.restartToken : '',
