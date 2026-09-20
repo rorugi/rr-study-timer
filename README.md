@@ -8,6 +8,7 @@ RR Study Timer tracks your active flashcard study time in RemNote, shows daily a
 
 <!-- Keep the latest 10 version updates, newest first, with one concise bullet per version. -->
 
+- **0.10.0:** Save Pomodoro progress every 30 seconds and restore it after reloads or platform changes.
 - **0.9.2:** Duration-scaled history icons, dates below weekly stacks, consistent settings icons, and save-and-close for names.
 - **0.9.1:** Stacked weekly tomato chart, orange/grey name-save icon, and scrolling for the whole Pomodoro window.
 - **0.9.0:** Session names in tooltips and today’s/seven-day history in the Info panel and statistics.
@@ -17,7 +18,6 @@ RR Study Timer tracks your active flashcard study time in RemNote, shows daily a
 - **0.7.5:** Pomodoro settings and Info buttons, plus a simpler user README.
 - **0.7.4:** Small tomato icon and a tighter background for the minimized clock.
 - **0.7.3:** Drag the Pomodoro freely; removed the pane option that caused errors.
-- **0.7.2:** Minimize the Pomodoro to a compact clock.
 
 ## Getting started
 
@@ -86,7 +86,9 @@ Click the main tomato to enter an optional **Name** (up to 120 characters) and c
 
 The floating window and review row share one timer. Hiding or minimizing the window does not pause it. Independent timing does not add time to your flashcard study statistics.
 
-Completed intervals are saved. Reloading RemNote starts a fresh countdown and returns to flashcard-activity mode; a partially completed interval does not synchronize between devices.
+Pomodoro progress is saved through RemNote’s synchronized plugin storage every 30 seconds while it changes, and after timer controls or configuration changes. The plugin also attempts a final save when the page is hidden or closed. After reloading or opening RemNote on another platform, the last synchronized remaining time is restored. Independent timers restore paused; use **Start / Resume** to continue. Flashcard mode resumes with active review. Time spent away from RemNote is not deducted.
+
+Cross-device restoration depends on RemNote completing synchronization; an abrupt close may lose progress since the last successful checkpoint. A completed interval stays at zero until you restart it.
 
 History tomatoes use standard size for 20–30 minutes. Shorter intervals scale down to 50% (10 minutes or less); longer intervals scale up to 150% (45 minutes or more).
 
@@ -96,6 +98,8 @@ Study statistics and completed Pomodoros are saved through RemNote's synchronize
 
 Only activity recorded while the plugin is running appears in the statistics. Abruptly closing RemNote can lose the latest unsaved activity. To avoid conflicting totals, study in one RemNote instance at a time.
 
+The current countdown checkpoint uses the storage key `rr-study-timer:pomodoro-checkpoint:v1`.
+
 ## About
 
 Created by Roland Russwurm. 
@@ -103,3 +107,4 @@ Created by Roland Russwurm.
 ## License
 
 Licensed under the MIT License.
+

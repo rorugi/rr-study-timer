@@ -4,8 +4,11 @@ import { TimerEngine } from './timer_engine';
 import { withDeadline } from './deadline';
 import { defaultSettings, normalizeSettings, SETTINGS_KEY, POMODORO_RESTART_KEY, POMODORO_CONTROL_KEY, type PomodoroControl, type PomodoroMode, type TimerSettings } from './settings';
 import type { TimerSnapshot } from './timer_engine';
+import type { PomodoroCheckpoint } from './pomodoro';
 import { savePomodoro } from './pomodoro_history';
 
+export const POMODORO_CHECKPOINT_KEY = 'rr-study-timer:pomodoro-checkpoint:v1';
+type SavedPomodoro = { timer: PomodoroCheckpoint; mode: PomodoroMode; savedAt: number };
 export const TIMER_STATE_KEY = 'rr-study-timer:session:v2';
 export type StatusSnapshot = TimerSnapshot & { settings: TimerSettings; pomodoroMode?: PomodoroMode; pomodoroControlId?: string };
 
@@ -25,6 +28,12 @@ export async function startTracking(plugin: RNPlugin, options = { rpcTimeoutMs: 
   let checkingVisibility = false;
   let checkingSettings = false;
   let displaySettings = defaultSettings();
+  let checkpointReady = false;
+  let checkpointWriting: Promise<void> | undefined;
+  let lastCheckpointAt = 0;
+  let lastCheckpointState = '';
+  let lastCheckpointChange = '';
+  let checkpointRetryAfter = 0;
   let lastRestartRequest: string | undefined;
   let lastControlRequest: string | undefined;
   const serviceStartedAt = Date.now();
@@ -34,6 +43,24 @@ export async function startTracking(plugin: RNPlugin, options = { rpcTimeoutMs: 
     getSynced: (key: string) => rpc(plugin.storage.getSynced(key)),
     setSynced: (key: string, value: unknown) => rpc(plugin.storage.setSynced(key, value)),
   }} as RNPlugin;
+
+  const saveCheckpoint = (force = false): Promise<void> => {
+    if (!checkpointReady) return Promise.resolve();
+    if (checkpointWriting) return checkpointWriting;
+    const timer = engine.pomodoro.checkpoint();
+    const record: SavedPomodoro = { timer, mode: engine.pomodoroMode, savedAt: Date.now() };
+    const state = JSON.stringify({ timer, mode: record.mode, name: displaySettings.pomodoroName, color: displaySettings.pomodoroColor });
+    const change = JSON.stringify([timer.enabled, timer.durationMs, timer.restartToken,
+      timer.intervalId, timer.remainingMs === 0, record.mode,
+      displaySettings.pomodoroName, displaySettings.pomodoroColor]);
+    if (state === lastCheckpointState || (!force && (Date.now() < checkpointRetryAfter ||
+      (change === lastCheckpointChange && Date.now() - lastCheckpointAt < 30000)))) return Promise.resolve();
+    checkpointWriting = rpc(plugin.storage.setSynced(POMODORO_CHECKPOINT_KEY, record))
+      .then(() => { lastCheckpointAt = record.savedAt; lastCheckpointState = state; lastCheckpointChange = change; checkpointRetryAfter = 0; })
+      .catch(cause => { checkpointRetryAfter = Date.now() + 5000; console.error('RR Study Timer checkpoint', cause); })
+      .finally(() => { checkpointWriting = undefined; });
+    return checkpointWriting;
+  };
 
   const publish = () => {
     if (publishing) return publishing;
@@ -79,6 +106,7 @@ export async function startTracking(plugin: RNPlugin, options = { rpcTimeoutMs: 
         void rpc(plugin.widget.openPopup('pomodoro_complete', { color }, false))
           .catch(cause => console.error('RR Study Timer completion popup', cause));
       }
+      void saveCheckpoint();
       // Neither persistence nor the session bridge blocks subsequent events/ticks.
       if (persist) void flush();
       void publish();
@@ -175,14 +203,28 @@ export async function startTracking(plugin: RNPlugin, options = { rpcTimeoutMs: 
   const checkSettings = () => {
     if (checkingSettings || stopped) return;
     checkingSettings = true;
-    void Promise.all([rpc(plugin.storage.getSynced(SETTINGS_KEY)),
+    void (checkpointReady ? Promise.resolve() : rpc(plugin.app?.waitForInitialSync?.() ?? Promise.resolve())).then(() => Promise.all([rpc(plugin.storage.getSynced(SETTINGS_KEY)),
       rpc(plugin.storage.getSession<{ id?: string }>(POMODORO_RESTART_KEY)),
-      rpc(plugin.storage.getSession<PomodoroControl>(POMODORO_CONTROL_KEY))]).then(([value, restart, control]) => {
+      rpc(plugin.storage.getSession<PomodoroControl>(POMODORO_CONTROL_KEY)),
+      checkpointReady ? Promise.resolve(undefined) : rpc(plugin.storage.getSynced<SavedPomodoro>(POMODORO_CHECKPOINT_KEY))])).then(([value, restart, control, saved]) => {
       if (stopped) return;
       const settings = normalizeSettings(value);
       void enqueue(() => {
         engine.advance(Date.now());
         engine.pomodoro.configure(settings);
+        if (!checkpointReady) {
+          const restored = saved && Number.isFinite(saved.savedAt) &&
+            ['running', 'paused', 'flashcards'].includes(saved.mode) && engine.pomodoro.restore(saved.timer);
+          if (restored) engine.setPomodoroMode(saved.mode === 'running' ? 'paused' : saved.mode, Date.now());
+          checkpointReady = true;
+          lastRestartRequest = restart?.id;
+          // Do not overwrite synchronized progress merely because this client opened.
+          lastCheckpointState = JSON.stringify({ timer: engine.pomodoro.checkpoint(), mode: engine.pomodoroMode, name: settings.pomodoroName, color: settings.pomodoroColor });
+          const timer = engine.pomodoro.checkpoint();
+          lastCheckpointChange = JSON.stringify([timer.enabled, timer.durationMs, timer.restartToken,
+            timer.intervalId, timer.remainingMs === 0, engine.pomodoroMode, settings.pomodoroName, settings.pomodoroColor]);
+          lastCheckpointAt = Date.now();
+        }
         if (!settings.pomodoroEnabled) engine.setPomodoroMode('flashcards', Date.now());
         displaySettings = settings;
         if (typeof control?.id === 'string' && control.id !== lastControlRequest &&
@@ -207,6 +249,10 @@ export async function startTracking(plugin: RNPlugin, options = { rpcTimeoutMs: 
     }).catch(cause => console.error('RR Study Timer settings', cause))
       .finally(() => { checkingSettings = false; });
   };
+  const saveOnHide = () => { void enqueue(() => engine.advance(Date.now())).then(() => saveCheckpoint(true)); };
+  const saveOnVisibility = () => { if (document.hidden) saveOnHide(); };
+  if (typeof window !== 'undefined') window.addEventListener('pagehide', saveOnHide);
+  if (typeof document !== 'undefined') document.addEventListener('visibilitychange', saveOnVisibility);
   checkSettings();
   load();
   const timer = setInterval(() => {
@@ -221,9 +267,13 @@ export async function startTracking(plugin: RNPlugin, options = { rpcTimeoutMs: 
   }, options.pollIntervalMs);
   return async () => {
     stopped = true; revision++; clearInterval(timer);
+    if (typeof window !== 'undefined') window.removeEventListener('pagehide', saveOnHide);
+    if (typeof document !== 'undefined') document.removeEventListener('visibilitychange', saveOnVisibility);
     for (const [event, callback] of listeners) plugin.event.removeListener(event, undefined, callback);
     const now = Date.now();
     await enqueue(() => engine.exit(now));
+    await checkpointWriting;
+    await saveCheckpoint(true);
     await flushing;
     await flush();
     await publishing;

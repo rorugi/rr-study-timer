@@ -220,3 +220,42 @@ test('SDK service replays observed load B / complete A order with delayed load r
     assert.equal(credits[0].entities['doc-2'].cardsCompleted,0);
   } finally {if(stop)await stop();Date.now=realNow;}
 });
+
+
+test('synced checkpoints restore on another platform without counting offline time or replaying completion',async()=>{
+ const {POMODORO_CHECKPOINT_KEY}=require('../src/tracking_service');
+ const realNow=Date.now;let now=new Date(2026,8,20,12).getTime();Date.now=()=>now;
+ const data=new Map(),session=new Map();let saved=[];let stop;let failWrite=false;
+ const config={...defaultSettings(),pomodoroEnabled:true,pomodoroMinutes:2,pomodoroName:'Spanish',pomodoroColor:'blue'};
+ let failRead=false;const notices=[];
+ const plugin={settings:{getSetting:async()=>30},app:{toast:async x=>notices.push(x)},widget:{openPopup:async()=>{}},
+ event:{addListener:()=>{},removeListener:()=>{}},queue:{getCurrentCard:async()=>undefined,inLookbackMode:async()=>false},
+ storage:{getSynced:async key=>{if(key===POMODORO_CHECKPOINT_KEY&&failRead)throw Error('offline');return structuredClone(key===SETTINGS_KEY?config:data.get(key));},
+ setSynced:async(key,value)=>{if(key===POMODORO_CHECKPOINT_KEY&&failWrite)throw Error('offline write');data.set(key,structuredClone(value));if(key===POMODORO_CHECKPOINT_KEY)saved.push(value);},getSession:async key=>session.get(key),setSession:async(key,value)=>session.set(key,structuredClone(value))}};
+ const settle=()=>new Promise(r=>setTimeout(r,60));
+ try {
+  stop=await startTracking(plugin,{rpcTimeoutMs:30,pollIntervalMs:5});await settle();
+  session.set(POMODORO_CONTROL_KEY,{id:'start',action:'start',at:now});await settle();
+  const realError=console.error;console.error=()=>{};failWrite=true;
+  try { now+=35000;await settle();assert.equal(session.get(TIMER_STATE_KEY).pomodoro.remainingMs,85000); }
+  finally {failWrite=false;console.error=realError;}
+  now+=5000;await settle();assert.equal(data.get(POMODORO_CHECKPOINT_KEY).timer.remainingMs,80000);
+  await stop();stop=null;assert.equal(data.get(POMODORO_CHECKPOINT_KEY).timer.remainingMs,80000);
+  now+=3600000;session.clear();const writes=saved.length;
+  failRead=true;const previousError=console.error;console.error=()=>{};
+  try { stop=await startTracking(plugin,{rpcTimeoutMs:30,pollIntervalMs:5});await settle();assert.equal(saved.length,writes); }
+  finally {failRead=false;console.error=previousError;}
+  await settle();
+  assert.equal(session.get(TIMER_STATE_KEY).pomodoro.remainingMs,80000);
+  assert.equal(session.get(TIMER_STATE_KEY).pomodoroMode,'paused');assert.equal(saved.length,writes);
+  now+=10000;await settle();assert.equal(session.get(TIMER_STATE_KEY).pomodoro.remainingMs,80000);
+  session.set(POMODORO_CONTROL_KEY,{id:'resume',action:'start',at:now});await settle();now+=80000;await settle();
+  assert.equal(notices.length,1);assert.equal(data.get(POMODORO_CHECKPOINT_KEY).timer.remainingMs,0);
+  await stop();stop=null;now+=1000;session.clear();
+  // A stale session restart signal must not reset a restored completed timer.
+  session.set(POMODORO_RESTART_KEY,{id:'old'});
+  stop=await startTracking(plugin,{rpcTimeoutMs:30,pollIntervalMs:5});await settle();
+  assert.equal(session.get(TIMER_STATE_KEY).pomodoro.remainingMs,0);assert.equal(notices.length,1);
+  await stop();stop=null;
+ }finally{if(stop)await stop();Date.now=realNow;}
+});
